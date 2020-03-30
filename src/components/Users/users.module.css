@@ -1,0 +1,12 @@
+.userPhoto {
+    width: 50px;
+}
+
+.selector {
+    padding: 10px;
+
+}
+
+.selectedPage {
+    font-weight: bold;
+}

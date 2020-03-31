@@ -2,18 +2,19 @@ import React from "react";
 import {connect} from "react-redux";
 import Users from "./Users";
 import {
-    followAC,
-    setCurrentPageAC,
-    setUsersAC,
-    toggleIsFetchingAC,
-    totalCountAC,
-    unfollowAC
+    follow,
+    setCurrentPage,
+    setUsers,
+    toggleIsFetching,
+    setTotalUsersCount,
+    unfollow
 } from "../../redux/usersReducer";
 import * as axios from "axios";
 import Preloader from "../common/preloader/preloader";
 
 class UsersAPIContainer extends React.Component {
 
+    // Первая отрисовка страницы
     componentDidMount() {
         this.props.toggleIsFetching(true);
         if (this.props.users.length === 0) {
@@ -26,6 +27,7 @@ class UsersAPIContainer extends React.Component {
         }
     }
 
+    // Функция переключения страницы с юзерами
     onPageChanged = (checkedPage) => {
         this.props.setCurrentPage(checkedPage);
         this.props.toggleIsFetching(true);
@@ -35,18 +37,29 @@ class UsersAPIContainer extends React.Component {
                 this.props.setUsers(response.data.items);
             });
 
-    }
+    };
 
     render() {
-
+        // Расчет количества страниц в селекторе
         let pagesCount = Math.ceil(this.props.totalUsersCount / this.props.pageSize);
         let pages = [];
-        for (let i = 1; i <= pagesCount; i ++) {
-            pages.push(i);
+        if (this.props.currentPage <= 5) {
+            for (let i = 1; i <= 9; i++) {
+                pages.push(i);
+            }
         }
-
+        else if (this.props.currentPage >= pagesCount - 5) {
+            for (let i = pagesCount - 9; i <= pagesCount; i++) {
+                pages.push(i);
+            }
+        }
+        else {
+            for (let i = 1 + (this.props.currentPage - 5); i <= 9 + (this.props.currentPage - 5); i++) {
+                pages.push(i);
+            }
+        }
         return <>
-            {this.props.isFetching ? <Preloader /> : null}
+            {this.props.isFetching ? <Preloader/> : null}
             <Users pages={pages}
                    currentPage={this.props.currentPage}
                    onPageChanged={this.onPageChanged}
@@ -58,7 +71,7 @@ class UsersAPIContainer extends React.Component {
     }
 }
 
-
+// Объект с данными для connect
 const mapToStateProps = (state) => {
     return {
         users: state.usersData.users,
@@ -68,16 +81,19 @@ const mapToStateProps = (state) => {
         isFetching: state.usersData.isFetching,
     }
 };
+
+/*// Объект с функциями для connect
+// Функцию зарефакторили в объект и забросили 2-м параметром в прямо connect
 const mapDispatchProps = (dispatch) => {
     return {
-       follow: (userId) => {
-           dispatch(followAC(userId));
-       },
+        follow: (userId) => {
+            dispatch(followAC(userId));
+        },
         unfollow: (userId) => {
             dispatch(unfollowAC(userId));
         },
         setUsers: (users) => {
-           dispatch(setUsersAC(users));
+            dispatch(setUsersAC(users));
         },
         setCurrentPage: (currentPage) => {
             dispatch(setCurrentPageAC(currentPage));
@@ -89,8 +105,12 @@ const mapDispatchProps = (dispatch) => {
             dispatch(toggleIsFetchingAC(isFetching));
         }
     }
-};
+};*/
 
-const UsersContainer = connect(mapToStateProps,mapDispatchProps)(UsersAPIContainer);
+
+const UsersContainer = connect(mapToStateProps, {
+    follow, unfollow, setUsers,
+    setCurrentPage, setTotalUsersCount, toggleIsFetching
+})(UsersAPIContainer);
 
 export default UsersContainer;

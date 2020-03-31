@@ -2,7 +2,6 @@ import React from 'react';
 import s from './MyPosts.module.css'
 import Post from './Post/Post';
 
-
 const MyPosts = (props) => {
 
     // создание тегов на основе полученных данных
@@ -19,7 +18,7 @@ const MyPosts = (props) => {
     // Функция обработчик изменения содержимого textArea
     let textAreaUpdate = () => {
         let text = newPostElement.current.value;
-        props.updatePostTextArea(text);
+        props.updatePostArea(text);
     };
 
     return (

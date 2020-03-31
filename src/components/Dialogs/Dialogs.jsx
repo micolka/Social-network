@@ -17,7 +17,7 @@ const Dialogs = (props) => {
     let sendMessageElement = React.createRef();
     // Функция-обработчик нажатия на button
     let butSendClick = () => {
-        props.sendDialogMessage();
+        props.addDialogMessage();
     };
 
     let updateMessageArea = () => {

@@ -82,32 +82,6 @@ const mapToStateProps = (state) => {
     }
 };
 
-/*// Объект с функциями для connect
-// Функцию зарефакторили в объект и забросили 2-м параметром в прямо connect
-const mapDispatchProps = (dispatch) => {
-    return {
-        follow: (userId) => {
-            dispatch(followAC(userId));
-        },
-        unfollow: (userId) => {
-            dispatch(unfollowAC(userId));
-        },
-        setUsers: (users) => {
-            dispatch(setUsersAC(users));
-        },
-        setCurrentPage: (currentPage) => {
-            dispatch(setCurrentPageAC(currentPage));
-        },
-        setTotalUsersCount: (totalCount) => {
-            dispatch(totalCountAC(totalCount));
-        },
-        toggleIsFetching: (isFetching) => {
-            dispatch(toggleIsFetchingAC(isFetching));
-        }
-    }
-};*/
-
-
 const UsersContainer = connect(mapToStateProps, {
     follow, unfollow, setUsers,
     setCurrentPage, setTotalUsersCount, toggleIsFetching

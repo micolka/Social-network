@@ -1,5 +1,6 @@
 const ADD_POST = 'ADD-POST';
 const UPDATE_POST_AREA = 'UPDATE-POST-AREA';
+const SET_USER_PROFILE = 'SET-USER-PROFILE';
 
 let initialState = {
     posts: [
@@ -8,7 +9,8 @@ let initialState = {
         {id: 3, message: 'Vamos a la plalla', likeCount: 50},
         {id: 4, message: 'Quiero salir a calle!', likeCount: 2}
     ],
-    textAreaValue: ''
+    textAreaValue: '',
+    profile: null
 };
 
 const profileReducer = (state = initialState, action) => {
@@ -26,12 +28,19 @@ const profileReducer = (state = initialState, action) => {
                 textAreaValue: action.postMessage
             };
         }
+        case SET_USER_PROFILE: {
+            return {
+                ...state,
+                profile: action.profile
+            };
+        }
         default: return state;
     }
 };
 
 // Action creators. Создает экшены для вызова функций Profile
 export const addPost = () => ({type: ADD_POST});
+export const setUserProfile = (profile) => ({type: SET_USER_PROFILE, profile});
 export const updatePostArea = (text) => ({type: UPDATE_POST_AREA, postMessage: text});
 
 export default profileReducer;

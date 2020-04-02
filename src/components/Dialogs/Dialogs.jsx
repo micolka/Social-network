@@ -10,7 +10,7 @@ const Dialogs = (props) => {
         return <DialogItem name={elem.name} id={elem.id}/>;
     });
     let formatedMessagesData = props.dialogsData.messages.map((elem) => {
-        return <Message message={elem.message}/>
+        return <Message message={elem.message} id={elem.id}/>
     });
 
     // Ссылка на TextArea

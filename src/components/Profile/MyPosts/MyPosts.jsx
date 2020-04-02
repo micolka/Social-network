@@ -6,7 +6,7 @@ const MyPosts = (props) => {
 
     // создание тегов на основе полученных данных
     let formatedPostsData = props.posts.map((elem) => {
-        return <Post message={elem.message} likeCount={elem.likeCount}/>;
+        return <Post key ={elem.id} message={elem.message} likeCount={elem.likeCount}/>;
     });
 
     // Ссылка на TextArea

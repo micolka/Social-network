@@ -2,7 +2,7 @@ import React from "react";
 import styles from './users.module.css';
 import userDefaultPhoto from '../../asets/images/userDefaultPhoto.png'
 import {NavLink} from "react-router-dom";
-import * as axios from "axios";
+import {UsersAPI} from "../../API/API";
 
 const Users = (props) => {
 
@@ -23,25 +23,17 @@ const Users = (props) => {
                 <div>
                     {u.followed
                         ? <button onClick={() => {
-                            axios.delete(`https://social-network.samuraijs.com/api/1.0//follow/${u.id}`, {
-                                withCredentials: true,
-                                headers: {
-                                    "API-KEY": "6a526b7b-f77a-432a-b7a4-40cad8b83d7b"
-                                }
-                            }).then(response => {
-                                    if (response.data.resultCode === 0) {
+                            // Отписка от юзера
+                            UsersAPI.unfollowUser(u.id).then(response => {
+                                    if (response.resultCode === 0) {
                                         props.unfollow(u.id);
                                     }
                                 });
                         }}>Unfollow</button>
                         : <button onClick={() => {
-                            axios.post(`https://social-network.samuraijs.com/api/1.0//follow/${u.id}`, {}, {
-                                withCredentials: true,
-                                headers: {
-                                    "API-KEY": "6a526b7b-f77a-432a-b7a4-40cad8b83d7b"
-                                }
-                            }).then(response => {
-                                    if (response.data.resultCode === 0) {
+                            // Подписка на юзера
+                            UsersAPI.followUser(u.id).then(response => {
+                                    if (response.resultCode === 0) {
                                         props.follow(u.id);
                                     }
                                 });

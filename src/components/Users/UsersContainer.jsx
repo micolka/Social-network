@@ -9,20 +9,22 @@ import {
     setTotalUsersCount,
     unfollow
 } from "../../redux/usersReducer";
-import * as axios from "axios";
 import Preloader from "../common/preloader/preloader";
+import {UsersAPI} from "../../API/API";
+
 
 class UsersAPIContainer extends React.Component {
 
-    // Первая отрисовка страницы
+    // Первая отрисовка страницы с юзерами
     componentDidMount() {
         this.props.toggleIsFetching(true);
         if (this.props.users.length === 0) {
-            axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${this.props.currentPage}&count=${this.props.pageSize}`, {
-                withCredentials: true}).then(response => {
+            // Получаем с сервера информацию о юзерах
+            UsersAPI.getUsers(this.props.currentPage, this.props.pageSize)
+                .then(response => {
                     this.props.toggleIsFetching(false);
-                    this.props.setUsers(response.data.items);
-                    this.props.setTotalUsersCount(response.data.totalCount);
+                    this.props.setUsers(response.items);
+                    this.props.setTotalUsersCount(response.totalCount);
                 });
         }
     }
@@ -31,10 +33,11 @@ class UsersAPIContainer extends React.Component {
     onPageChanged = (checkedPage) => {
         this.props.setCurrentPage(checkedPage);
         this.props.toggleIsFetching(true);
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${checkedPage}&count=${this.props.pageSize}`, {
-            withCredentials: true}).then(response => {
+        // Получаем с сервера информацию о юзерах
+        UsersAPI.getUsers(checkedPage, this.props.pageSize)
+            .then(response => {
                 this.props.toggleIsFetching(false);
-                this.props.setUsers(response.data.items);
+                this.props.setUsers(response.items);
             });
 
     };

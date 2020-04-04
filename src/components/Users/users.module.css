@@ -6,6 +6,19 @@
     padding: 10px;
 }
 
+.restPages {
+    border: 1px solid #dd692f;
+    padding: 1px 5px;
+    border-radius: 5px;
+    margin: 0 1px;
+    cursor: pointer;
+}
+
 .selectedPage {
+    background-color: #54535e;
     font-weight: bold;
+    padding: 1px 5px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer
 }

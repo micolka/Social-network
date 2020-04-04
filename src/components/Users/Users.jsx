@@ -9,7 +9,7 @@ const Users = (props) => {
         return <div>
             <div className={styles.selector}>
                 {props.pages.map( p => {
-                    return <span className={props.currentPage === p && styles.selectedPage}
+                    return <span className={props.currentPage === p ? styles.selectedPage : styles.restPages}
                     onClick={() => { props.onPageChanged(p) }}>{p}</span>;
                 })}
             </div>
@@ -22,20 +22,25 @@ const Users = (props) => {
                 </div>
                 <div>
                     {u.followed
-                        ? <button onClick={() => {
+                        ? <button disabled={props.followingQueie.some( (id) => id === u.id)} onClick={() => {
+                            props.toggleIsFollProgr(true, u.id);
                             // Отписка от юзера
                             UsersAPI.unfollowUser(u.id).then(response => {
                                     if (response.resultCode === 0) {
                                         props.unfollow(u.id);
                                     }
+                                    props.toggleIsFollProgr(false, u.id);
                                 });
+
                         }}>Unfollow</button>
-                        : <button onClick={() => {
+                        : <button disabled={props.followingQueie.some( (id) => id === u.id)} onClick={() => {
+                            props.toggleIsFollProgr(true, u.id);
                             // Подписка на юзера
                             UsersAPI.followUser(u.id).then(response => {
                                     if (response.resultCode === 0) {
                                         props.follow(u.id);
                                     }
+                                    props.toggleIsFollProgr(false, u.id);
                                 });
                         }}>Follow</button>}
                 </div>

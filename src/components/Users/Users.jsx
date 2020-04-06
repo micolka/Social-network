@@ -2,7 +2,6 @@ import React from "react";
 import styles from './users.module.css';
 import userDefaultPhoto from '../../asets/images/userDefaultPhoto.png'
 import {NavLink} from "react-router-dom";
-import {UsersAPI} from "../../API/API";
 
 const Users = (props) => {
 
@@ -13,7 +12,8 @@ const Users = (props) => {
                     onClick={() => { props.onPageChanged(p) }}>{p}</span>;
                 })}
             </div>
-            {props.users.map(u => <div id={u.id}>
+            <div className={styles.UsersBox}>
+                {props.users.map(u => <div className={styles.userBlock}>
             <span>
                 <div>
                     <NavLink to={'/profile/' + u.id}>
@@ -23,25 +23,14 @@ const Users = (props) => {
                 <div>
                     {u.followed
                         ? <button disabled={props.followingQueie.some( (id) => id === u.id)} onClick={() => {
-                            props.toggleIsFollProgr(true, u.id);
                             // Отписка от юзера
-                            UsersAPI.unfollowUser(u.id).then(response => {
-                                    if (response.resultCode === 0) {
-                                        props.unfollow(u.id);
-                                    }
-                                    props.toggleIsFollProgr(false, u.id);
-                                });
+                            props.unfollowUser(u.id);
 
                         }}>Unfollow</button>
                         : <button disabled={props.followingQueie.some( (id) => id === u.id)} onClick={() => {
-                            props.toggleIsFollProgr(true, u.id);
-                            // Подписка на юзера
-                            UsersAPI.followUser(u.id).then(response => {
-                                    if (response.resultCode === 0) {
-                                        props.follow(u.id);
-                                    }
-                                    props.toggleIsFollProgr(false, u.id);
-                                });
+                            // Подписка от юзера
+                            props.followUser(u.id);
+
                         }}>Follow</button>}
                 </div>
             </span>
@@ -56,8 +45,8 @@ const Users = (props) => {
             </span>
             </span>
             </div>)}
+            </div>
         </div>
-
-}
+};
 
 export default Users;

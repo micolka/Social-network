@@ -11,6 +11,12 @@ const instance = axios.create({
     }
 });
 
+export const AuthAPI = {
+    // Функция получает с сервака о залогиненом пользователе
+    getAuthMe () {
+        return instance.get(`/auth/me`).then(response => response.data);
+    }
+};
 
 export const UsersAPI = {
     // Функция осущ запрос на сервер и получает информацию о пользователях
@@ -20,9 +26,9 @@ export const UsersAPI = {
         .then(response => response.data);
     },
 
-    // Функция получает с сервака о залогиненом пользователе
-    getAuthMe () {
-        return instance.get(`/auth/me`).then(response => response.data);
+    // Функция получает с сервака данные о профиле юзера
+    getProfile (id) {
+        return instance.get(`profile/${id}`).then(response => response.data);
     },
 
     // Функция отписывается от Юзера с индексом id

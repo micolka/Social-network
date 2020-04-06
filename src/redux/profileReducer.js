@@ -1,3 +1,5 @@
+import {UsersAPI} from "../API/API";
+
 const ADD_POST = 'ADD-POST';
 const UPDATE_POST_AREA = 'UPDATE-POST-AREA';
 const SET_USER_PROFILE = 'SET-USER-PROFILE';
@@ -42,5 +44,15 @@ const profileReducer = (state = initialState, action) => {
 export const addPost = () => ({type: ADD_POST});
 export const setUserProfile = (profile) => ({type: SET_USER_PROFILE, profile});
 export const updatePostArea = (text) => ({type: UPDATE_POST_AREA, postMessage: text});
+
+// Санка для подписки на юзера с возможностью блока кнопки
+export const showUserProfileThunckCreator = (UserID) => {
+    return (dispatch) => {
+        if (!UserID) UserID = 2;
+        UsersAPI.getProfile(UserID).then(response => {
+            dispatch(setUserProfile(response));
+        });
+    };
+};
 
 export default profileReducer;

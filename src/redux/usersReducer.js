@@ -1,3 +1,5 @@
+import {UsersAPI} from "../API/API";
+
 const FOLLOW = 'FOLLOW';
 const UNFOLLOW = 'UNFOLLOW';
 const SET_USERS = 'SET-USERS';
@@ -50,7 +52,7 @@ const usersReducer = (state = initialState, action) => {
             return {...state,
                     followingQueie: action.followingInProgress
                         ?  [...state.followingQueie, action.UserID]
-                        : state.followingQueie.filter( id => id != action.UserID )
+                        : state.followingQueie.filter( id => id !== action.UserID )
                 };
         default:
             return state;
@@ -65,5 +67,47 @@ export const setCurrentPage = (currentPage) => ({type: SET_CURRENT_PAGE, current
 export const setTotalUsersCount = (totalCount) => ({type: SET_TOTAL_USERS_COUNT, totalUsersCount: totalCount});
 export const toggleIsFetching = (isFetching) => ({type: TOGGLE_IS_FETCHING, isFetching: isFetching});
 export const toggleIsFollowingProgress = (followingInProgress, UserID) => ({type: TOGGLE_IS_FOLLOWING_PROGRESS, followingInProgress, UserID});
+
+// Санка для получения списка юзеров на определенной странице
+export const getUsersThunckCreator = (currentPage, pageSize) => {
+    return (dispatch) => {
+        dispatch(toggleIsFetching(true));
+        // Получаем с сервера информацию о юзерах
+        UsersAPI.getUsers(currentPage, pageSize)
+            .then(response => {
+                dispatch(toggleIsFetching(false));
+                dispatch(setUsers(response.items));
+                dispatch(setTotalUsersCount(response.totalCount));
+            });
+    };
+};
+
+// Санка для отписки от юзера с возможностью блока кнопки
+export const unfollowUserThunckCreator = (userId) => {
+    return (dispatch) => {
+        dispatch(toggleIsFollowingProgress(true, userId));
+        // Отписка от юзера
+        UsersAPI.unfollowUser(userId).then(response => {
+            if (response.resultCode === 0) {
+                dispatch(unfollow(userId));
+            }
+            dispatch(toggleIsFollowingProgress(false, userId));
+        });
+    };
+};
+
+// Санка для подписки на юзера с возможностью блока кнопки
+export const followUserThunckCreator = (userId) => {
+    return (dispatch) => {
+        dispatch(toggleIsFollowingProgress(true, userId));
+        // Отписка от юзера
+        UsersAPI.followUser(userId).then(response => {
+            if (response.resultCode === 0) {
+                dispatch(follow(userId));
+            }
+            dispatch(toggleIsFollowingProgress(false, userId));
+        });
+    };
+};
 
 export default usersReducer;

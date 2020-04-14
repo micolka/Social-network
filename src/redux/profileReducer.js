@@ -1,8 +1,9 @@
-import {UsersAPI} from "../API/API";
+import {ProfileAPI, UsersAPI} from "../API/API";
 
 const ADD_POST = 'ADD-POST';
 const UPDATE_POST_AREA = 'UPDATE-POST-AREA';
 const SET_USER_PROFILE = 'SET-USER-PROFILE';
+const SET_STATUS = 'SET-STATUS';
 
 let initialState = {
     posts: [
@@ -12,7 +13,8 @@ let initialState = {
         {id: 4, message: 'Quiero salir a calle!', likeCount: 2}
     ],
     textAreaValue: '',
-    profile: null
+    profile: null,
+    status: '',
 };
 
 const profileReducer = (state = initialState, action) => {
@@ -36,6 +38,12 @@ const profileReducer = (state = initialState, action) => {
                 profile: action.profile
             };
         }
+        case SET_STATUS: {
+            return {
+                ...state,
+                status: action.status
+            };
+        }
         default: return state;
     }
 };
@@ -43,14 +51,34 @@ const profileReducer = (state = initialState, action) => {
 // Action creators. Создает экшены для вызова функций Profile
 export const addPost = () => ({type: ADD_POST});
 export const setUserProfile = (profile) => ({type: SET_USER_PROFILE, profile});
+export const setStatus = (status) => ({type: SET_STATUS, status});
 export const updatePostArea = (text) => ({type: UPDATE_POST_AREA, postMessage: text});
 
-// Санка для подписки на юзера с возможностью блока кнопки
+// Санка для получения инфы о выбранном юзере
 export const showUserProfileThunckCreator = (UserID) => {
     return (dispatch) => {
-        if (!UserID) UserID = 2;
         UsersAPI.getProfile(UserID).then(response => {
             dispatch(setUserProfile(response));
+        });
+    };
+};
+
+// Санка для получения статуса пользователя с сервака
+export const getStatusThunckCreator = (UserID) => {
+    return (dispatch) => {
+        ProfileAPI.getStatus(UserID).then(response => {
+            dispatch(setStatus(response));
+        });
+    };
+};
+
+// Санка для обновления статуса пользователя на серваке
+export const updateStatusThunckCreator = (status) => {
+    return (dispatch) => {
+        ProfileAPI.updateStatus(status).then(response => {
+            if (response.resultCode === 0) {
+                dispatch(setStatus(status));
+            }
         });
     };
 };

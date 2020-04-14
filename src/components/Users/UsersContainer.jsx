@@ -47,7 +47,7 @@ class UsersAPIContainer extends React.Component {
             }
         }
         return <>
-            {this.props.isFetching ? <Preloader/> : null}
+            {/*this.props.isFetching ? <Preloader/> : null - прелоадер перетянул в хэдэр*/}
             <Users pages={pages}
                    currentPage={this.props.currentPage}
                    onPageChanged={this.onPageChanged}

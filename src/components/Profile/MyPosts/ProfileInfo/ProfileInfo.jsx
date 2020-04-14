@@ -2,6 +2,7 @@ import React from 'react';
 import s from './ProfileInfo.module.css'
 import Preloader from "../../../common/preloader/preloader";
 import userDefaultPhoto from "../../../../asets/images/userDefaultPhoto.png";
+import ProfileStatus from "../../ProfileStatus/ProfileStatus";
 
 const ProfileInfo = (props) => {
 
@@ -11,9 +12,10 @@ const ProfileInfo = (props) => {
 
     return (
         <div>
-            <div className={s.fontImage}>
+            {/*<div className={s.fontImage}>
                 <img src='https://images.unsplash.com/photo-1499084732479-de2c02d45fcc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80' alt="backImage"></img>
-            </div>
+            </div>*/}
+            <ProfileStatus status={props.status} updateStatus={props.updateStatus}/>
             <div className={s.descriptionBlock}>
                 <img src={props.profile.photos.large != null ? props.profile.photos.large : userDefaultPhoto} alt="ava"></img>
                 <div>

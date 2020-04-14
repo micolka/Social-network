@@ -1,14 +1,55 @@
 .nav{
-  grid-area: n;
-  background-color: #4e514e;
+  background-color: #0d0f1b;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
-
-.item a {
-  color: aliceblue;
+/*настройка кнопок менюшки*/
+.items .item a {
+  position: relative;
+  display: inline-block;
   text-decoration: none;
+  padding: 6px 5px;
+  background: #2196f3;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  overflow: hidden;
+  transition: 0.5s;
+  z-index: 1;
 }
-
-.item a.activeLink {
-  color: gold;
+/*прозрачность меню при наведении*/
+.items:hover .item a {
+  opacity: 0.3;
+}
+/*изменение кнопки меню при наведении*/
+.items .item a:hover {
+  transform: scale(1.4);
+  z-index: 1000;
+  background: #ff3f81;
+  opacity: 1;
+}
+/*активная кнопочка*/
+.items .item a.activeLink {
+  color: #2196f3;
+  background: #fff;
+}
+/*настройка градиента возле каждоый кнопки меню*/
+.items .item a:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100px;
+  width: 80px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(
+          255,255,255,0.8), transparent);
+  transform: skewX(35deg);
+  transition: 0s;
+}
+/*активация движения градиента при намедении мышки*/
+.items .item a:hover:before {
+  left: calc(100% + 100px);
+  transition: 0.5s;
+  transition-delay: 0.2s;
 }

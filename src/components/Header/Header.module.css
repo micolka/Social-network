@@ -1,15 +1,21 @@
 .header{
     grid-area: h;
     background-color: #f3aa31;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
   }
 
-  .header img{
-    width: 40px;
-  }
+.header img{
+    width: 50px;
+}
+
+.preloader {
+    background-color: #317b20;
+}
 
 .loginBlock {
     float: right;
-
+    background-color: #203a7b;
 }
 .loginBlock a {
     color: crimson;

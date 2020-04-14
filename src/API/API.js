@@ -12,7 +12,7 @@ const instance = axios.create({
 });
 
 export const AuthAPI = {
-    // Функция получает с сервака о залогиненом пользователе
+    // Функция получает с сервака данные о залогиненом пользователе
     getAuthMe () {
         return instance.get(`/auth/me`).then(response => response.data);
     }
@@ -25,22 +25,34 @@ export const UsersAPI = {
         return instance.get(`/users?page=${currentPage}&count=${pageSize}`)
         .then(response => response.data);
     },
-
-    // Функция получает с сервака данные о профиле юзера
-    getProfile (id) {
-        return instance.get(`profile/${id}`).then(response => response.data);
-    },
-
     // Функция отписывается от Юзера с индексом id
     unfollowUser (id) {
         return instance.delete(`/follow/${id}`).then(response => response.data);
     },
-
     // Функция подписывается на Юзера с индексом id
     followUser (id) {
         return instance.post(`/follow/${id}`).then(response => response.data);
     },
+    // Функция получает с сервака данные о профиле юзера (устарела)
+    getProfile (id) {
+        console.warn('Obsolete method. Please use ProfileAPI object.')
+        return ProfileAPI.getProfile(id);
+    }
+};
 
+export const ProfileAPI = {
+    // Функция получает с сервака данные о профиле юзера по ID
+    getProfile (id) {
+        return instance.get(`profile/${id}`).then(response => response.data);
+    },
+    // Функция получает с сервака статус юзера по ID
+    getStatus (id) {
+        return instance.get(`/profile/status/${id}`).then(response => response.data);
+    },
+    // Функция отправляют на сервер статус (status) залогиненного юзера
+    updateStatus (status) {
+        return instance.put(`/profile/status`,{status: status}).then(response => response.data);
+    }
 };
 
 

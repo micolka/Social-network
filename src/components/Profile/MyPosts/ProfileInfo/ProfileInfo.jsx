@@ -5,11 +5,13 @@ import userDefaultPhoto from "../../../../asets/images/userDefaultPhoto.png";
 import ProfileStatus from "../../ProfileStatus/ProfileStatus";
 
 const ProfileInfo = (props) => {
-
+    // Отображаем прелодер, если инфа о профайле еще не подгрузилась
     if (!props.profile) {
-        return <Preloader/>
+        props.toggleFetching(true);
+        return <></>;
+    } else {
+        props.toggleFetching(false);
     }
-
     return (
         <div>
             {/*<div className={s.fontImage}>
@@ -17,7 +19,8 @@ const ProfileInfo = (props) => {
             </div>*/}
             <ProfileStatus status={props.status} updateStatus={props.updateStatus}/>
             <div className={s.descriptionBlock}>
-                <img src={props.profile.photos.large != null ? props.profile.photos.large : userDefaultPhoto} alt="ava"></img>
+                <img src={props.profile.photos.large != null ? props.profile.photos.large : userDefaultPhoto}
+                     alt="ava"></img>
                 <div>
                     {props.profile.fullName}
                 </div>

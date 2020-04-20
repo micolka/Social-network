@@ -1,5 +1,4 @@
 const ADD_DIALOG_MESSAGE = 'ADD-DIALOG-MESSAGE';
-const UPDATE_DIALOG_MESSAGE_AREA = 'UPDATE-DIALOG-MESSAGE-AREA';
 
 let initialState = {
     dialogs: [
@@ -9,7 +8,6 @@ let initialState = {
         {id: 4, name: 'Fernandes'},
         {id: 5, name: 'Alexandro'}
     ],
-    dialogTextValue: '',
     messages: [
         {id: 1, message: 'Hola!'},
         {id: 2, message: 'Como te llama?'},
@@ -24,13 +22,7 @@ const dialogsReducer = (state = initialState, action) => {
         case ADD_DIALOG_MESSAGE:
             return {
                 ...state,
-                messages: [...state.messages, {id: 5, message: state.dialogTextValue}],
-                dialogTextValue: ''
-            };
-        case UPDATE_DIALOG_MESSAGE_AREA:
-            return {
-                ...state,
-                dialogTextValue: action.postMessage
+                messages: [...state.messages, {id: 5, message: action.postMessage}],
             };
         default:
             return state;
@@ -38,7 +30,6 @@ const dialogsReducer = (state = initialState, action) => {
 };
 
 // Action creators. Создает экшены для вызова функций Dialogs
-export const addDialogMessage = () => ({type : ADD_DIALOG_MESSAGE});
-export const updateDialogMessageArea = (text) => ({type: UPDATE_DIALOG_MESSAGE_AREA, postMessage: text});
+export const addDialogMessage = (text) => ({type : ADD_DIALOG_MESSAGE, postMessage: text});
 
 export default dialogsReducer;

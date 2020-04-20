@@ -11,8 +11,16 @@ const Header = (props) => {
                 {props.isFetching ? <Preloader/> : null}
             </div>
             <div className={s.loginBlock}>
-                {props.isAuthorised ? props.login :
-                    <NavLink to={'/login'}>Login</NavLink>}
+                {props.isAuthorised ?
+                    <div>
+                        <div>
+                            {props.login}
+                        </div>
+                        <div className={s.exit} onClick={() => { props.disconnectMe() }}>
+                            Выход
+                        </div>
+                    </div>
+                    : <NavLink to={'/login'}>Login</NavLink>}
             </div>
         </header>
     );

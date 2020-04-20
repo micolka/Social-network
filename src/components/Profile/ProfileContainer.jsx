@@ -9,6 +9,7 @@ import {
 import {Redirect, withRouter} from "react-router-dom";
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 import {compose} from "redux";
+import {toggleIsFetching} from "../../redux/usersReducer";
 
 class ProfileContainer extends React.Component {
 
@@ -26,7 +27,8 @@ class ProfileContainer extends React.Component {
         if (!this.props.isAuth) return <Redirect to={"/login"}/>;
 
         return (
-            <Profile  profile ={this.props.profile} status={this.props.status} updateStatus={this.props.updateStatus}/>
+            <Profile  profile ={this.props.profile} status={this.props.status}
+                      updateStatus={this.props.updateStatus} toggleFetching={this.props.toggleIsFetching}/>
         );
     }
 }
@@ -39,7 +41,8 @@ let mapStateToProps = (state) => ({
 export default compose(
     connect(mapStateToProps,{showUserProfile: showUserProfileThunckCreator,
                             getUserStatus: getStatusThunckCreator,
-                            updateStatus: updateStatusThunckCreator}),
+                            updateStatus: updateStatusThunckCreator,
+                            toggleIsFetching: toggleIsFetching}),
     withRouter,
     withAuthRedirect
 )(ProfileContainer);

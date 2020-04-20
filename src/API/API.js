@@ -15,7 +15,17 @@ export const AuthAPI = {
     // Функция получает с сервака данные о залогиненом пользователе
     getAuthMe () {
         return instance.get(`/auth/me`).then(response => response.data);
-    }
+    },
+    // Функция осуществляет логин на серваке и возвращает результат операции
+    loginMe (email, password, rememberMe) {
+        return instance.post(`/auth/login`,
+            {email: email, password: password,
+            rememberMe: rememberMe}).then(response => response.data);
+    },
+    // Функция отлогинивает юзера с сервака и возвращает результат операции
+    exitMe () {
+        return instance.delete(`/auth/login`).then(response => response.data);
+    },
 };
 
 export const UsersAPI = {

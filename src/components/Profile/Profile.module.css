@@ -1,0 +1,13 @@
+.profileBlock {
+    display: grid;
+    grid-template-rows: 1.3fr 3fr;
+}
+
+.postContainer {
+
+}
+
+.profileInfo {
+    background-color: #cad713;
+
+}

@@ -1,7 +1,6 @@
 import {ProfileAPI, UsersAPI} from "../API/API";
 
 const ADD_POST = 'ADD-POST';
-const UPDATE_POST_AREA = 'UPDATE-POST-AREA';
 const SET_USER_PROFILE = 'SET-USER-PROFILE';
 const SET_STATUS = 'SET-STATUS';
 
@@ -12,7 +11,6 @@ let initialState = {
         {id: 3, message: 'Vamos a la plalla', likeCount: 50},
         {id: 4, message: 'Quiero salir a calle!', likeCount: 2}
     ],
-    textAreaValue: '',
     profile: null,
     status: '',
 };
@@ -22,14 +20,8 @@ const profileReducer = (state = initialState, action) => {
         case ADD_POST: {
             return  {
                 ...state,
-                posts: [...state.posts, {id: 5, message: state.textAreaValue, likeCount: 0}],
+                posts: [...state.posts, {id: 5, message: action.postMessage, likeCount: 0}],
                 textAreaValue:''
-            };
-        }
-        case UPDATE_POST_AREA: {
-            return {
-                ...state,
-                textAreaValue: action.postMessage
             };
         }
         case SET_USER_PROFILE: {
@@ -49,10 +41,10 @@ const profileReducer = (state = initialState, action) => {
 };
 
 // Action creators. Создает экшены для вызова функций Profile
-export const addPost = () => ({type: ADD_POST});
+export const addPost = (text) => ({type: ADD_POST,postMessage: text});
 export const setUserProfile = (profile) => ({type: SET_USER_PROFILE, profile});
 export const setStatus = (status) => ({type: SET_STATUS, status});
-export const updatePostArea = (text) => ({type: UPDATE_POST_AREA, postMessage: text});
+//export const updatePostArea = (text) => ({type: UPDATE_POST_AREA, postMessage: text});
 
 // Санка для получения инфы о выбранном юзере
 export const showUserProfileThunckCreator = (UserID) => {

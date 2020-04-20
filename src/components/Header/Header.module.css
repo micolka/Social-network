@@ -2,7 +2,7 @@
     grid-area: h;
     background-color: #f3aa31;
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 2fr 0.5fr;
   }
 
 .header img{
@@ -16,7 +16,13 @@
 .loginBlock {
     float: right;
     background-color: #203a7b;
+    color: #daf107;
 }
 .loginBlock a {
     color: crimson;
+}
+
+.exit{
+    padding-top: 5px;
+    cursor: pointer;
 }

@@ -14,8 +14,8 @@ class LoginContainer extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        isFetching: state.usersData.isFetching,
-        isAuth: state.authData.isAuthorised
+        isAuth: state.authData.isAuthorised,
+        captchaURL: state.authData.captchaURL
     }
 };
 

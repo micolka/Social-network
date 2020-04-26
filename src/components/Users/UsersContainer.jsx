@@ -11,8 +11,6 @@ import {
 import {compose} from "redux";
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 
-
-
 class UsersAPIContainer extends React.Component {
 
     // Первая отрисовка страницы с юзерами
@@ -46,7 +44,6 @@ class UsersAPIContainer extends React.Component {
             }
         }
         return <>
-            {/*this.props.isFetching ? <Preloader/> : null - прелоадер перетянул в хэдэр*/}
             <Users pages={pages}
                    currentPage={this.props.currentPage}
                    onPageChanged={this.onPageChanged}

@@ -17,15 +17,18 @@ export const AuthAPI = {
         return instance.get(`/auth/me`).then(response => response.data);
     },
     // Функция осуществляет логин на серваке и возвращает результат операции
-    loginMe (email, password, rememberMe) {
+    loginMe (email, password, rememberMe, captcha) {
         return instance.post(`/auth/login`,
-            {email: email, password: password,
-            rememberMe: rememberMe}).then(response => response.data);
+            {email, password, rememberMe, captcha}).then(response => response.data);
     },
     // Функция отлогинивает юзера с сервака и возвращает результат операции
     exitMe () {
         return instance.delete(`/auth/login`).then(response => response.data);
     },
+    // Функция получает URL капчи для проверки безопасности
+    getCaptchaURL () {
+        return instance.get(`/security/get-captcha-url`).then(response => response.data);
+    }
 };
 
 export const UsersAPI = {

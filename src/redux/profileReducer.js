@@ -1,4 +1,5 @@
 import {ProfileAPI, UsersAPI} from "../API/API";
+import {toggleIsFetching} from "./usersReducer";
 
 const ADD_POST = 'ADD-POST';
 const SET_USER_PROFILE = 'SET-USER-PROFILE';
@@ -44,13 +45,14 @@ const profileReducer = (state = initialState, action) => {
 export const addPost = (text) => ({type: ADD_POST,postMessage: text});
 export const setUserProfile = (profile) => ({type: SET_USER_PROFILE, profile});
 export const setStatus = (status) => ({type: SET_STATUS, status});
-//export const updatePostArea = (text) => ({type: UPDATE_POST_AREA, postMessage: text});
 
 // Санка для получения инфы о выбранном юзере
 export const showUserProfileThunckCreator = (UserID) => {
     return (dispatch) => {
+        dispatch(toggleIsFetching(true));
         UsersAPI.getProfile(UserID).then(response => {
             dispatch(setUserProfile(response));
+            dispatch(toggleIsFetching(false));
         });
     };
 };
@@ -58,8 +60,10 @@ export const showUserProfileThunckCreator = (UserID) => {
 // Санка для получения статуса пользователя с сервака
 export const getStatusThunckCreator = (UserID) => {
     return (dispatch) => {
+        dispatch(toggleIsFetching(true));
         ProfileAPI.getStatus(UserID).then(response => {
             dispatch(setStatus(response));
+            dispatch(toggleIsFetching(false));
         });
     };
 };
@@ -67,9 +71,11 @@ export const getStatusThunckCreator = (UserID) => {
 // Санка для обновления статуса пользователя на серваке
 export const updateStatusThunckCreator = (status) => {
     return (dispatch) => {
+        dispatch(toggleIsFetching(true));
         ProfileAPI.updateStatus(status).then(response => {
             if (response.resultCode === 0) {
                 dispatch(setStatus(status));
+                dispatch(toggleIsFetching(false));
             }
         });
     };

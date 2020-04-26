@@ -1,12 +1,10 @@
 import React from 'react';
 import Profile from "./Profile";
 import {connect} from "react-redux";
-import {
-    getStatusThunckCreator,
-    showUserProfileThunckCreator,
-    updateStatusThunckCreator
-} from "../../redux/profileReducer";
-import {Redirect, withRouter} from "react-router-dom";
+import {    getStatusThunckCreator,
+            showUserProfileThunckCreator,
+            updateStatusThunckCreator } from "../../redux/profileReducer";
+import {withRouter} from "react-router-dom";
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 import {compose} from "redux";
 import {toggleIsFetching} from "../../redux/usersReducer";
@@ -17,14 +15,12 @@ class ProfileContainer extends React.Component {
     componentDidMount() {
         // Берем параметр UserID из адресной строки
         let UserID = this.props.match.params.userId;
-        if (!UserID) UserID = 6832; //этот костыль нужно фиксить
+        if (!UserID) UserID = this.props.userId;
         this.props.showUserProfile(UserID);
         this.props.getUserStatus(UserID);
     }
 
     render () {
-
-        if (!this.props.isAuth) return <Redirect to={"/login"}/>;
 
         return (
             <Profile  profile ={this.props.profile} status={this.props.status}
@@ -36,6 +32,7 @@ class ProfileContainer extends React.Component {
 let mapStateToProps = (state) => ({
     profile: state.profileData.profile,
     status: state.profileData.status,
+    userId: state.authData.userId
 });
 
 export default compose(

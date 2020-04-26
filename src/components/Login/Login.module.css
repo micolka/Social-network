@@ -1,1 +1,8 @@
+.loginCommon {
+    padding-left: 10px;
+}
 
+.loginCommon .formError{
+    color: #d70e0e;
+    font-weight: bold;
+}

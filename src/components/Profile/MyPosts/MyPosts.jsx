@@ -35,10 +35,10 @@ const PublishPostForm = (props) => {
     return <form onSubmit={props.handleSubmit}>
         <div>
             <Field placeholder={'Type something here'} name={"postTxtValue"}
-                   component={TextArea} validate={[requiredField, maxLength]}/>
+                   component={TextArea} validate={[requiredField, maxLength]} className={s.inputPost}/>
         </div>
         <div>
-            <button>Add post</button>
+            <button className={s.btnSendPost}>Add post</button>
         </div>
     </form>
 };

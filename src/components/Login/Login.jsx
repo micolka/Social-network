@@ -23,29 +23,29 @@ let maxCaptchaLength = maxLengthCreator(10);
 const LoginForm = (props) => {
     return <form onSubmit={props.handleSubmit}>
         <div>
-            <Field placeholder={"Login"} name={"login"} component={Input} validate={[requiredField, maxLength]}/>
+            <Field placeholder={"Login"} name={"login"} component={Input}
+                   validate={[requiredField, maxLength]} className={s.inputLogin}/>
         </div>
         <div>
             <Field placeholder={"Password"} name={"password"} component={Input}
-                   validate={[requiredField, maxLength]} type={"password"}/>
+                   validate={[requiredField, maxLength]} type={"password"} className={s.inputPass}/>
         </div>
-        <div>
+        <div className={s.remMe}>
             <Field component={"input"} name={"rememberMe"} type={"checkbox"}/>Remember me
         </div>
         {props.captchaURL && <div>
             <div>
                 <Field placeholder={"Captcha"} name={"captcha"} component={Input}
-                       validate={[requiredField, maxCaptchaLength]}/>
+                       validate={[requiredField, maxCaptchaLength]} className={s.inputLogin}/>
             </div>
             <div>
                 <img src={props.captchaURL} alt={"captcha"}/>
             </div>
         </div>}
         <div>
-            <button>Login</button>
+            <button className={s.btnLogin}>Login</button>
         </div>
         {props.error && <div className={s.formError}>{props.error}</div>}
-
     </form>
 };
 

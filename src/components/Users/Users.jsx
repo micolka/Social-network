@@ -26,12 +26,12 @@ const Users = (props) => {
                             // Отписка от юзера
                             props.unfollowUser(u.id);
 
-                        }}>Unfollow</button>
+                        }} className={styles.btnFollow}>Unfollow</button>
                         : <button disabled={props.followingQueie.some( (id) => id === u.id)} onClick={() => {
                             // Подписка от юзера
                             props.followUser(u.id);
 
-                        }}>Follow</button>}
+                        }} className={styles.btnFollow}>Follow</button>}
                 </div>
             </span>
                 <span>

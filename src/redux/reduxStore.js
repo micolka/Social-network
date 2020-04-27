@@ -5,6 +5,7 @@ import usersReducer from "./usersReducer";
 import authReducer from "./authReducer";
 import thunkMiddleware from "redux-thunk";
 import { reducer as formReducer } from 'redux-form'
+import appReducer from "./appReducer";
 
 //Закидываем в стор редьюсеры
 let reducersBunch = combineReducers( {
@@ -12,6 +13,7 @@ let reducersBunch = combineReducers( {
     profileData: profileReducer,
     usersData: usersReducer,
     authData: authReducer,
+    appData: appReducer,
     form: formReducer
 } );
 

@@ -16,7 +16,7 @@
     padding: 10px;
 }
 .restPages {
-    border: 1px solid #dd692f;
+    border: 1px solid #3498db;
     padding: 1px 5px;
     border-radius: 5px;
     margin: 0 1px;
@@ -24,10 +24,28 @@
 }
 
 .selectedPage {
-    background-color: #54535e;
+    background-color: #2ecc71;
     font-weight: bold;
     padding: 1px 5px;
     color: white;
     border-radius: 5px;
     cursor: pointer
+}
+
+.btnFollow {
+    background: none;
+    display: block;
+    margin: 4px;
+    text-align: center;
+    border: 2px solid #2ecc71;
+    padding: 3px 8px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s;
+    cursor: pointer;
+}
+
+.btnFollow:hover {
+    background: #2ecc71;
 }

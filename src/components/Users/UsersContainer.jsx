@@ -72,6 +72,6 @@ const mapToStateProps = (state) => {
 export default compose(
     connect(mapToStateProps, { setCurrentPage, toggleIsFollowingProgress,
         getUsers: getUsersThunckCreator, unfollowUserThunckCreator, followUserThunckCreator}),
-    withAuthRedirect
+   // withAuthRedirect
 )(UsersAPIContainer);
 

@@ -8,7 +8,7 @@ const Header = (props) => {
         <header className={s.header}>
             <img src='https://i.pinimg.com/originals/33/b8/69/33b869f90619e81763dbf1fccc896d8d.jpg' alt="logo"></img>
             <div className={s.preloader}>
-                { (props.isFetching || props.isAuthInProcess) ? <Preloader/> : null}
+                { (props.isFetching) ? <Preloader/> : null}
             </div>
             <div className={s.loginBlock}>
                 {props.isAuthorised ?
@@ -16,9 +16,9 @@ const Header = (props) => {
                         <div>
                             {props.login}
                         </div>
-                        <div className={s.exit} onClick={() => { props.disconnectMe() }}>
-                            Выход
-                        </div>
+                        <button className={s.btnExit} onClick={() => { props.disconnectMe() }}>
+                            Exit
+                        </button>
                     </div>
                     : <NavLink to={'/login'}>Login</NavLink>}
             </div>

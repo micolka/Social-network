@@ -1,6 +1,6 @@
 .header{
     grid-area: h;
-    background-color: #f3aa31;
+    background-color: #203a7b;
     display: grid;
     grid-template-columns: 1fr 2fr 0.5fr;
   }
@@ -10,19 +10,33 @@
 }
 
 .preloader {
-    background-color: #317b20;
+    background-color: #203a7b;
 }
 
 .loginBlock {
+    margin: auto;
     float: right;
     background-color: #203a7b;
     color: #daf107;
 }
+
 .loginBlock a {
     color: crimson;
 }
 
-.exit{
-    padding-top: 5px;
+.btnExit {
+    background: none;
+    display: block;
+    text-align: center;
+    border: 2px solid #2ecc71;
+    padding: 3px 15px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s;
     cursor: pointer;
+}
+
+.btnExit:hover {
+    background: #2ecc71;
 }

@@ -5,8 +5,8 @@
     grid-template-columns: 1fr 2fr 0.5fr;
   }
 
-.header img{
-    width: 50px;
+.logoImg {
+    width: 150px;
 }
 
 .preloader {
@@ -40,3 +40,4 @@
 .btnExit:hover {
     background: #2ecc71;
 }
+

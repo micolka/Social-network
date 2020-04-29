@@ -12,8 +12,8 @@ import HeaderContainer from "./components/Header/HeaderContainer";
 import LoginContainer from "./components/Login/LoginContainer";
 import {connect} from "react-redux";
 import {setAppThunckCreator} from "./redux/appReducer";
-import Preloader from "./components/common/preloader/preloader";
 import {compose} from "redux";
+import MainPreloader from "./components/common/mainPreloader/mainPreloader";
 
 class App extends React.Component {
 
@@ -24,7 +24,13 @@ class App extends React.Component {
 
     render() {
         if (!this.props.isInit) {
-            return "Loading";
+            return (
+                <div className='preloaderWrapper'>
+                    <div className='preloaderTriangle'>
+                        <MainPreloader />
+                    </div>
+                </div>
+            );
         }
 
         return (

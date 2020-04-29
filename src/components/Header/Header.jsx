@@ -1,14 +1,16 @@
 import React from 'react';
+import './Header.scss';
 import s from './Header.module.css'
 import {NavLink} from "react-router-dom";
 import Preloader from "../common/preloader/preloader";
+import logoSPSN from '../../asets/images/logoSPSN.png'
 
 const Header = (props) => {
     return (
         <header className={s.header}>
-            <img src='https://i.pinimg.com/originals/33/b8/69/33b869f90619e81763dbf1fccc896d8d.jpg' alt="logo"></img>
+            <img className={s.logoImg} src={logoSPSN} alt="logo"></img>
             <div className={s.preloader}>
-                { (props.isFetching) ? <Preloader/> : null}
+                {(props.isFetching) ? <Preloader/> : null}
             </div>
             <div className={s.loginBlock}>
                 {props.isAuthorised ?
@@ -16,11 +18,15 @@ const Header = (props) => {
                         <div>
                             {props.login}
                         </div>
-                        <button className={s.btnExit} onClick={() => { props.disconnectMe() }}>
+                        <button className={s.btnExit} onClick={() => {
+                            props.disconnectMe()
+                        }}>
                             Exit
                         </button>
                     </div>
-                    : <NavLink to={'/login'}>Login</NavLink>}
+                    : <div className='navLogin'>
+                        <NavLink to={'/login'}>Login</NavLink>
+                    </div>}
             </div>
         </header>
     );

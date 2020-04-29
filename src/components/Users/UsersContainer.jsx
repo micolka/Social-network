@@ -2,14 +2,15 @@ import React from "react";
 import {connect} from "react-redux";
 import Users from "./Users";
 import {
-    setCurrentPage,
-    toggleIsFollowingProgress,
-    getUsersThunckCreator,
-    unfollowUserThunckCreator,
+    setCurrentPage, toggleIsFollowingProgress,
+    getUsersThunckCreator, unfollowUserThunckCreator,
     followUserThunckCreator
 } from "../../redux/usersReducer";
 import {compose} from "redux";
-import {withAuthRedirect} from "../../hoc/withAuthRedirect";
+import {
+    currentPageSelector, followingQueie, isFetchingSelector,
+    pageSizeSelector, totalUsersCountSelector, usersSuperSelector
+} from "../../redux/selectors/usersSelector";
 
 class UsersAPIContainer extends React.Component {
 
@@ -58,7 +59,7 @@ class UsersAPIContainer extends React.Component {
 }
 
 // Объект с данными для connect
-const mapToStateProps = (state) => {
+/*const mapToStateProps = (state) => {
     return {
         users: state.usersData.users,
         pageSize: state.usersData.pageSize,
@@ -67,10 +68,23 @@ const mapToStateProps = (state) => {
         isFetching: state.usersData.isFetching,
         followingQueie: state.usersData.followingQueie,
     }
+};*/
+// Пример исплользования селекторов (уроки 81-83)
+const mapToStateProps = (state) => {
+    return {
+        // users: usersSelector(state),
+        // использование сложного селектора
+        users: usersSuperSelector(state),
+        pageSize: pageSizeSelector(state),
+        totalUsersCount: totalUsersCountSelector(state),
+        currentPage: currentPageSelector(state),
+        isFetching: isFetchingSelector(state),
+        followingQueie: followingQueie(state),
+    }
 };
 
 export default compose(
-    connect(mapToStateProps, { setCurrentPage, toggleIsFollowingProgress,
+    connect(mapToStateProps, {setCurrentPage, toggleIsFollowingProgress,
         getUsers: getUsersThunckCreator, unfollowUserThunckCreator, followUserThunckCreator}),
    // withAuthRedirect
 )(UsersAPIContainer);

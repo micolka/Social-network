@@ -5,9 +5,20 @@
     grid-template-areas: "h h" "n c";
     grid-template-rows: 60px 1fr;
     grid-template-columns: 2fr 10fr;
-    /* grid-gap: 10px; */
+}
 
-
+.preloaderWrapper {
+    margin: 0 auto;
+    width: 1000px;
+    height: 700px;
+    background-color: #1f2d39;
+    position: relative;
+}
+.preloaderTriangle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-80%, -60%);
 }
 
 .app-wrapper-content {

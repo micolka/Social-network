@@ -1,7 +1,7 @@
 import React from 'react';
 import s from './ProfileInfo.module.css'
 import userDefaultPhoto from "../../../../asets/images/userDefaultPhoto.png";
-import ProfileStatus from "../../ProfileStatus/ProfileStatus";
+import ProfileStatusWithHooks from "../../ProfileStatus/ProfileStatusWithHooks";
 
 const ProfileInfo = (props) => {
     // Отображаем прелодер, если инфа о профайле еще не подгрузилась
@@ -16,7 +16,7 @@ const ProfileInfo = (props) => {
             {/*<div className={s.fontImage}>
                 <img src='https://images.unsplash.com/photo-1499084732479-de2c02d45fcc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80' alt="backImage"></img>
             </div>*/}
-            <ProfileStatus status={props.status} updateStatus={props.updateStatus}/>
+            <ProfileStatusWithHooks status={props.status} updateStatus={props.updateStatus}/>
             <div className={s.descriptionBlock}>
                 <img src={props.profile.photos.large != null ? props.profile.photos.large : userDefaultPhoto}
                      alt="ava"></img>

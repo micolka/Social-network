@@ -3,6 +3,7 @@ import React from "react";
 class ProfileStatus extends React.Component {
     //statusInputRef = React.createRef();
 
+    // Локальный стейт для сосхранения временного статуса
     state = {
         editMode: false,
         status: this.props.status

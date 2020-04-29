@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 const ProfileStatusWithHooks = (props) => {
 
@@ -7,6 +7,11 @@ const ProfileStatusWithHooks = (props) => {
     // Локальный стейт для сосхранения временного статуса и функции для его изменения
     let [localStatus, setlocalStatus] = useState(props.status);
     let [editMode, setEditMode] = useState(false);
+
+    // Синхронизация статуса после изменения пропсов
+    useEffect( () => {
+        setlocalStatus(props.status);
+    },[props.status]);
 
     const activateEditMode = () => {
         setEditMode(true);

@@ -26,27 +26,8 @@ class UsersAPIContainer extends React.Component {
     };
 
     render() {
-        // Расчет количества страниц в селекторе
-        let pagesCount = Math.ceil(this.props.totalUsersCount / this.props.pageSize);
-        let pages = [];
-        if (this.props.currentPage <= 5) {
-            for (let i = 1; i <= 9; i++) {
-                pages.push(i);
-            }
-        }
-        else if (this.props.currentPage >= pagesCount - 5) {
-            for (let i = pagesCount - 9; i <= pagesCount; i++) {
-                pages.push(i);
-            }
-        }
-        else {
-            for (let i = 1 + (this.props.currentPage - 5); i <= 9 + (this.props.currentPage - 5); i++) {
-                pages.push(i);
-            }
-        }
         return <>
-            <Users pages={pages}
-                   currentPage={this.props.currentPage}
+            <Users currentPage={this.props.currentPage}
                    onPageChanged={this.onPageChanged}
                    users={this.props.users}
                    followingQueie={this.props.followingQueie}
@@ -58,17 +39,6 @@ class UsersAPIContainer extends React.Component {
     }
 }
 
-// Объект с данными для connect
-/*const mapToStateProps = (state) => {
-    return {
-        users: state.usersData.users,
-        pageSize: state.usersData.pageSize,
-        totalUsersCount: state.usersData.totalUsersCount,
-        currentPage: state.usersData.currentPage,
-        isFetching: state.usersData.isFetching,
-        followingQueie: state.usersData.followingQueie,
-    }
-};*/
 // Пример исплользования селекторов (уроки 81-83)
 const mapToStateProps = (state) => {
     return {

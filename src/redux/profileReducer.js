@@ -1,9 +1,9 @@
 import {ProfileAPI, UsersAPI} from "../API/API";
 import {toggleIsFetching} from "./usersReducer";
 
-const ADD_POST = 'ADD-POST';
-const SET_USER_PROFILE = 'SET-USER-PROFILE';
-const SET_STATUS = 'SET-STATUS';
+const ADD_POST = 'myReactSocialNet/profileReducer/ADD-POST';
+const SET_USER_PROFILE = 'myReactSocialNet/profileReducer/SET-USER-PROFILE';
+const SET_STATUS = 'myReactSocialNet/profileReducer/SET-STATUS';
 
 let initialState = {
     posts: [
@@ -47,38 +47,31 @@ export const setUserProfile = (profile) => ({type: SET_USER_PROFILE, profile});
 export const setStatus = (status) => ({type: SET_STATUS, status});
 
 // Санка для получения инфы о выбранном юзере
-export const showUserProfileThunckCreator = (UserID) => {
-    return (dispatch) => {
-        dispatch(toggleIsFetching(true));
-        UsersAPI.getProfile(UserID).then(response => {
-            dispatch(setUserProfile(response));
-            dispatch(toggleIsFetching(false));
-        });
-    };
+export const showUserProfileThunckCreator = (UserID) => async (dispatch) => {
+    dispatch(toggleIsFetching(true));
+    const response = await UsersAPI.getProfile(UserID);
+    dispatch(setUserProfile(response));
+    dispatch(toggleIsFetching(false));
+
 };
 
 // Санка для получения статуса пользователя с сервака
-export const getStatusThunckCreator = (UserID) => {
-    return (dispatch) => {
-        dispatch(toggleIsFetching(true));
-        ProfileAPI.getStatus(UserID).then(response => {
-            dispatch(setStatus(response));
-            dispatch(toggleIsFetching(false));
-        });
-    };
+export const getStatusThunckCreator = (UserID) => async (dispatch) => {
+    dispatch(toggleIsFetching(true));
+    const response = await ProfileAPI.getStatus(UserID)
+    dispatch(setStatus(response));
+    dispatch(toggleIsFetching(false));
 };
 
+
 // Санка для обновления статуса пользователя на серваке
-export const updateStatusThunckCreator = (status) => {
-    return (dispatch) => {
-        dispatch(toggleIsFetching(true));
-        ProfileAPI.updateStatus(status).then(response => {
-            if (response.resultCode === 0) {
-                dispatch(setStatus(status));
-                dispatch(toggleIsFetching(false));
-            }
-        });
-    };
+export const updateStatusThunckCreator = (status) => async (dispatch) => {
+    dispatch(toggleIsFetching(true));
+    const response = await ProfileAPI.updateStatus(status)
+    if (response.resultCode === 0) {
+        dispatch(setStatus(status));
+        dispatch(toggleIsFetching(false));
+    }
 };
 
 export default profileReducer;

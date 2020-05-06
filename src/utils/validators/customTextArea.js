@@ -1,12 +1,13 @@
 import React from "react";
 import styles from "./customTextArea.module.css";
+import {Field} from "redux-form";
 
-export const FormControl = ({input, meta, ...props}) => {
-    const hasError = meta.touched && meta.error;
+export const FormControl = ({input, meta: {touched, error}, ...props}) => {
+    const hasError = touched && error;
     return <div className={styles.customTextArea + " " + (hasError ? styles.error : '')}>
         {props.children}
         <div>
-            {hasError && <span>{meta.error}</span>}
+            {hasError && <span>{error}</span>}
         </div>
     </div>
 }
@@ -19,4 +20,11 @@ export const TextArea = (props) => {
 export const Input = (props) => {
     const {input, meta, child, ...restProps} = props;
     return <FormControl {...props}> <input {...input} {...restProps} /></FormControl>
+}
+
+export const createLoginField = (placeholder, name, component, validate, className, props = {}) => {
+    return <div>
+    <Field placeholder={placeholder} name={name} component={component}
+           validate={validate} className={className} {...props}/>
+    </div>
 }

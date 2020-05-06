@@ -1,6 +1,6 @@
 import React from 'react';
 import {Field, reduxForm} from "redux-form";
-import {Input} from "../../utils/validators/customTextArea";
+import {createLoginField, Input} from "../../utils/validators/customTextArea";
 import {maxLengthCreator, requiredField} from "../../utils/validators/validators";
 import s from './Login.module.css'
 
@@ -20,32 +20,23 @@ const Login = (props) => {
 let maxLength = maxLengthCreator(30);
 let maxCaptchaLength = maxLengthCreator(10);
 
-const LoginForm = (props) => {
-    return <form onSubmit={props.handleSubmit}>
-        <div>
-            <Field placeholder={"Login"} name={"login"} component={Input}
-                   validate={[requiredField, maxLength]} className={s.inputLogin}/>
-        </div>
-        <div>
-            <Field placeholder={"Password"} name={"password"} component={Input}
-                   validate={[requiredField, maxLength]} type={"password"} className={s.inputPass}/>
-        </div>
+const LoginForm = ({handleSubmit, captchaURL, error}) => {
+    return <form onSubmit={handleSubmit}>
+        {createLoginField("Login", "login", Input, [requiredField, maxLength], s.inputLogin)}
+        {createLoginField("Password", "password", Input, [requiredField, maxLength], s.inputLogin, {type: "password"})}
         <div className={s.remMe}>
             <Field component={"input"} name={"rememberMe"} type={"checkbox"}/>Remember me
         </div>
-        {props.captchaURL && <div>
+        {captchaURL && <div>
+            {createLoginField("Captcha", "captcha", Input, [requiredField, maxCaptchaLength], s.inputLogin)}
             <div>
-                <Field placeholder={"Captcha"} name={"captcha"} component={Input}
-                       validate={[requiredField, maxCaptchaLength]} className={s.inputLogin}/>
-            </div>
-            <div>
-                <img src={props.captchaURL} alt={"captcha"}/>
+                <img src={captchaURL} alt={"captcha"}/>
             </div>
         </div>}
         <div>
             <button className={s.btnLogin}>Login</button>
         </div>
-        {props.error && <div className={s.formError}>{props.error}</div>}
+        {error && <div className={s.formError}>{error}</div>}
     </form>
 };
 

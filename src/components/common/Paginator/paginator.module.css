@@ -1,0 +1,19 @@
+.selector {
+    padding: 10px;
+}
+.restPages {
+    border: 1px solid #3498db;
+    padding: 1px 5px;
+    border-radius: 5px;
+    margin: 0 1px;
+    cursor: pointer;
+}
+
+.selectedPage {
+    background-color: #2ecc71;
+    font-weight: bold;
+    padding: 1px 5px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer
+}

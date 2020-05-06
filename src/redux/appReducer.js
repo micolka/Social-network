@@ -1,6 +1,6 @@
 import {authMeThunckCreator} from "./authReducer";
 
-const SET_APP_INITIALISED = 'SET-APP-INITIALISED';
+const SET_APP_INITIALISED = 'myReactSocialNet/appReducer/SET-APP-INITIALISED';
 
 let initialState = {
     isInitialized : false

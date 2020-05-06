@@ -1,4 +1,4 @@
-const ADD_DIALOG_MESSAGE = 'ADD-DIALOG-MESSAGE';
+const ADD_DIALOG_MESSAGE = 'myReactSocialNet/dialogsReducer/ADD-DIALOG-MESSAGE';
 
 let initialState = {
     dialogs: [

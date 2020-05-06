@@ -1,12 +1,21 @@
 import {UsersAPI} from "../API/API";
 
-const FOLLOW = 'FOLLOW';
-const UNFOLLOW = 'UNFOLLOW';
-const SET_USERS = 'SET-USERS';
-const SET_CURRENT_PAGE = 'SET-CURRENT-PAGE';
-const SET_TOTAL_USERS_COUNT = 'SET-USERS-TOTAL-COUNT';
-const TOGGLE_IS_FETCHING = 'TOGGLE-IS-FETCHING';
-const TOGGLE_IS_FOLLOWING_PROGRESS = 'TOGGLE-IS-FOLLOWING-PROGRESS';
+const FOLLOW = 'myReactSocialNet/usersReducer/FOLLOW';
+const UNFOLLOW = 'myReactSocialNet/usersReducer/UNFOLLOW';
+const SET_USERS = 'myReactSocialNet/usersReducer/SET-USERS';
+const SET_CURRENT_PAGE = 'myReactSocialNet/usersReducer/SET-CURRENT-PAGE';
+const SET_TOTAL_USERS_COUNT = 'myReactSocialNet/usersReducer/SET-USERS-TOTAL-COUNT';
+const TOGGLE_IS_FETCHING = 'myReactSocialNet/usersReducer/TOGGLE-IS-FETCHING';
+const TOGGLE_IS_FOLLOWING_PROGRESS = 'myReactSocialNet/usersReducer/TOGGLE-IS-FOLLOWING-PROGRESS';
+
+const updateObjectIbArray = (items, itemId, objPropName, newObjProps) => {
+    return items.map(user => {
+        if (user[objPropName] === itemId) {
+            return {...user, ...newObjProps};
+        }
+        return user;
+    });
+};
 
 
 let initialState = {
@@ -23,22 +32,12 @@ const usersReducer = (state = initialState, action) => {
         case FOLLOW:
             return {
                 ...state,
-                users: state.users.map(user => {
-                    if (user.id === action.userId) {
-                        return {...user, followed: true};
-                    }
-                    return user;
-                })
+                users: updateObjectIbArray(state.users, action.userId, "id", {followed: true} )
             };
         case UNFOLLOW:
             return {
                 ...state,
-                users: state.users.map(user => {
-                    if (user.id === action.userId) {
-                        return {...user, followed: false};
-                    }
-                    return user;
-                })
+                users: updateObjectIbArray(state.users, action.userId, "id", {followed: false} )
             };
         case SET_USERS:
             return {...state, users: action.users};
@@ -69,45 +68,33 @@ export const toggleIsFetching = (isFetching) => ({type: TOGGLE_IS_FETCHING, isFe
 export const toggleIsFollowingProgress = (followingInProgress, UserID) => ({type: TOGGLE_IS_FOLLOWING_PROGRESS, followingInProgress, UserID});
 
 // Санка для получения списка юзеров на определенной странице
-export const getUsersThunckCreator = (currentPage, pageSize) => {
-    return (dispatch) => {
-        dispatch(toggleIsFetching(true));
-        // Получаем с сервера информацию о юзерах
-        UsersAPI.getUsers(currentPage, pageSize)
-            .then(response => {
-                dispatch(toggleIsFetching(false));
-                dispatch(setUsers(response.items));
-                dispatch(setTotalUsersCount(response.totalCount));
-            });
-    };
+export const getUsersThunckCreator = (currentPage, pageSize) => async (dispatch) => {
+    dispatch(toggleIsFetching(true));
+    // Получаем с сервера информацию о юзерах
+    let response = await UsersAPI.getUsers(currentPage, pageSize);
+    dispatch(toggleIsFetching(false));
+    dispatch(setUsers(response.items));
+    dispatch(setTotalUsersCount(response.totalCount));
+};
+
+const followUnfollowFlow = async (dispatch, userId, apiMethod, followAction) => {
+    dispatch(toggleIsFollowingProgress(true, userId));
+    // Отписка от юзера
+    let response = await apiMethod(userId);
+    if (response.resultCode === 0) {
+        dispatch(followAction(userId));
+    }
+    dispatch(toggleIsFollowingProgress(false, userId));
 };
 
 // Санка для отписки от юзера с возможностью блока кнопки
-export const unfollowUserThunckCreator = (userId) => {
-    return (dispatch) => {
-        dispatch(toggleIsFollowingProgress(true, userId));
-        // Отписка от юзера
-        UsersAPI.unfollowUser(userId).then(response => {
-            if (response.resultCode === 0) {
-                dispatch(unfollow(userId));
-            }
-            dispatch(toggleIsFollowingProgress(false, userId));
-        });
-    };
+export const unfollowUserThunckCreator = (userId) =>  async (dispatch) => {
+    followUnfollowFlow(dispatch, userId, UsersAPI.unfollowUser.bind(UsersAPI), unfollow);
 };
 
 // Санка для подписки на юзера с возможностью блока кнопки
-export const followUserThunckCreator = (userId) => {
-    return (dispatch) => {
-        dispatch(toggleIsFollowingProgress(true, userId));
-        // Отписка от юзера
-        UsersAPI.followUser(userId).then(response => {
-            if (response.resultCode === 0) {
-                dispatch(follow(userId));
-            }
-            dispatch(toggleIsFollowingProgress(false, userId));
-        });
-    };
+export const followUserThunckCreator = (userId) => async (dispatch) => {
+    followUnfollowFlow(dispatch, userId, UsersAPI.followUser.bind(UsersAPI), follow);
 };
 
 export default usersReducer;

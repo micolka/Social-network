@@ -8,12 +8,13 @@ const Profile = (props) => {
     return (
         <div className={s.profileBlock}>
             <div className={s.profileInfo} >
-                <ProfileInfo profile={props.profile} status={props.status}
-                             updateStatus={props.updateStatus} toggleFetching={props.toggleFetching}/>
+                <ProfileInfo isOwner={props.isOwner} profile={props.profile} status={props.status}
+                             updateStatus={props.updateStatus} toggleFetching={props.toggleFetching}
+                             savePhoto={props.savePhoto} updateProfileInfo={props.updateProfileInfo}/>
             </div>
-            <div className={s.postContainer}>
+            {props.isOwner && <div className={s.postContainer}>
                 <MyPostsContainer />
-            </div>
+            </div>}
         </div>
     );
 }

@@ -9,7 +9,7 @@ const MyPosts = (props) => {
 
     // создание массива тегов с постами для рендера
     let formatedPostsData = props.posts.map((elem) => {
-        return <Post key ={elem.id} message={elem.message} likeCount={elem.likeCount}/>;
+        return <Post key={elem.id} message={elem.message} likeCount={elem.likeCount}/>;
     });
 
     // обработка события Publish Post

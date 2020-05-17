@@ -3,7 +3,9 @@ import Profile from "./Profile";
 import {connect} from "react-redux";
 import {    getStatusThunckCreator,
             showUserProfileThunckCreator,
-            updateStatusThunckCreator } from "../../redux/profileReducer";
+            updateStatusThunckCreator,
+            saveProfilePhotoThunckCreator,
+            updateProfileThunckCreator } from "../../redux/profileReducer";
 import {withRouter} from "react-router-dom";
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 import {compose} from "redux";
@@ -11,8 +13,7 @@ import {toggleIsFetching} from "../../redux/usersReducer";
 
 class ProfileContainer extends React.Component {
 
-    // Первая отрисовка страницы
-    componentDidMount() {
+    refreshProfile () {
         // Берем параметр UserID из адресной строки
         let UserID = this.props.match.params.userId;
         if (!UserID) UserID = this.props.userId;
@@ -20,11 +21,28 @@ class ProfileContainer extends React.Component {
         this.props.getUserStatus(UserID);
     }
 
-    render () {
+    // Первая отрисовка страницы
+    componentDidMount() {
+        this.refreshProfile();
+    }
+
+    // Обновление компоненты
+    componentDidUpdate(prevProps) {
+        if (this.props.match.params.userId !== prevProps.match.params.userId) {
+            this.refreshProfile();
+        }
+    }
+
+    render() {
 
         return (
-            <Profile  profile ={this.props.profile} status={this.props.status}
-                      updateStatus={this.props.updateStatus} toggleFetching={this.props.toggleIsFetching}/>
+            <Profile isOwner ={!this.props.match.params.userId}
+                profile={this.props.profile}
+                status={this.props.status}
+                updateStatus={this.props.updateStatus}
+                updateProfileInfo={this.props.updateProfileInfo}
+                savePhoto={this.props.savePhoto}
+                toggleFetching={this.props.toggleIsFetching} />
         );
     }
 }
@@ -39,6 +57,8 @@ export default compose(
     connect(mapStateToProps,{showUserProfile: showUserProfileThunckCreator,
                             getUserStatus: getStatusThunckCreator,
                             updateStatus: updateStatusThunckCreator,
+                            savePhoto: saveProfilePhotoThunckCreator,
+                            updateProfileInfo:updateProfileThunckCreator,
                             toggleIsFetching: toggleIsFetching}),
     withRouter,
     withAuthRedirect

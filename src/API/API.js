@@ -55,16 +55,31 @@ export const UsersAPI = {
 
 export const ProfileAPI = {
     // Функция получает с сервака данные о профиле юзера по ID
-    getProfile (id) {
+    getProfile(id) {
         return instance.get(`profile/${id}`).then(response => response.data);
     },
     // Функция получает с сервака статус юзера по ID
-    getStatus (id) {
+    getStatus(id) {
         return instance.get(`/profile/status/${id}`).then(response => response.data);
     },
     // Функция отправляют на сервер статус (status) залогиненного юзера
-    updateStatus (status) {
-        return instance.put(`/profile/status`,{status: status}).then(response => response.data);
+    updateStatus(status) {
+        return instance.put(`/profile/status`, { status: status }).then(response => response.data);
+    },
+    // Функция отправляют на сервер аватарку залогиненного юзера
+    saveProfilePhoto(photoFile) {
+        let formData = new FormData();
+        formData.append("image", photoFile);
+
+        return instance.put(`profile/photo`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }    
+        }).then(response => response.data);
+    },
+    // Функция отправляют на сервер объект с данными профиля на залогиненного юзера
+    updateProfile(userProfile) {
+        return instance.put(`/profile`, userProfile).then(response => response.data);
     }
 };
 

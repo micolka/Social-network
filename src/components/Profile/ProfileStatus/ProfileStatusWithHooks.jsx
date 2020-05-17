@@ -13,8 +13,11 @@ const ProfileStatusWithHooks = (props) => {
         setlocalStatus(props.status);
     },[props.status]);
 
+    // Активатор изменения статуса Юзера
     const activateEditMode = () => {
-        setEditMode(true);
+        if (props.isOwner) {
+            setEditMode(true);
+        }
     }
 
     const deActivateEditMode = () => {

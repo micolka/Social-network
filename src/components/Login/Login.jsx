@@ -1,6 +1,6 @@
 import React from 'react';
 import {Field, reduxForm} from "redux-form";
-import {createLoginField, Input} from "../../utils/validators/customTextArea";
+import {createCustomField, Input} from "../../utils/validators/customTextArea";
 import {maxLengthCreator, requiredField} from "../../utils/validators/validators";
 import s from './Login.module.css'
 
@@ -22,13 +22,13 @@ let maxCaptchaLength = maxLengthCreator(10);
 
 const LoginForm = ({handleSubmit, captchaURL, error}) => {
     return <form onSubmit={handleSubmit}>
-        {createLoginField("Login", "login", Input, [requiredField, maxLength], s.inputLogin)}
-        {createLoginField("Password", "password", Input, [requiredField, maxLength], s.inputLogin, {type: "password"})}
+        {createCustomField("Login", "login", Input, [requiredField, maxLength], s.inputLogin)}
+        {createCustomField("Password", "password", Input, [requiredField, maxLength], s.inputLogin, {type: "password"})}
         <div className={s.remMe}>
             <Field component={"input"} name={"rememberMe"} type={"checkbox"}/>Remember me
         </div>
         {captchaURL && <div>
-            {createLoginField("Captcha", "captcha", Input, [requiredField, maxCaptchaLength], s.inputLogin)}
+            {createCustomField("Captcha", "captcha", Input, [requiredField, maxCaptchaLength], s.inputLogin)}
             <div>
                 <img src={captchaURL} alt={"captcha"}/>
             </div>

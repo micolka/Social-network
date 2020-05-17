@@ -1,9 +1,11 @@
 import {ProfileAPI, UsersAPI} from "../API/API";
 import {toggleIsFetching} from "./usersReducer";
+import {stopSubmit} from "redux-form";
 
 const ADD_POST = 'myReactSocialNet/profileReducer/ADD-POST';
 const SET_USER_PROFILE = 'myReactSocialNet/profileReducer/SET-USER-PROFILE';
 const SET_STATUS = 'myReactSocialNet/profileReducer/SET-STATUS';
+const SET_USER_PHOTO = 'myReactSocialNet/profileReducer/SET-USER-PHOTO';
 
 let initialState = {
     posts: [
@@ -37,6 +39,12 @@ const profileReducer = (state = initialState, action) => {
                 status: action.status
             };
         }
+        case SET_USER_PHOTO: {
+            return {
+                ...state,
+                profile: {...state.profile, photos: action.photos}
+            };
+        }
         default: return state;
     }
 };
@@ -45,6 +53,8 @@ const profileReducer = (state = initialState, action) => {
 export const addPost = (text) => ({type: ADD_POST,postMessage: text});
 export const setUserProfile = (profile) => ({type: SET_USER_PROFILE, profile});
 export const setStatus = (status) => ({type: SET_STATUS, status});
+export const setUserPhoto = (photos) => ({type: SET_USER_PHOTO, photos});
+
 
 // Санка для получения инфы о выбранном юзере
 export const showUserProfileThunckCreator = (UserID) => async (dispatch) => {
@@ -55,6 +65,23 @@ export const showUserProfileThunckCreator = (UserID) => async (dispatch) => {
 
 };
 
+// Санка для обновления данных профиля пользователя на серваке
+export const updateProfileThunckCreator = (userProfile, UserID) => async (dispatch) => {
+    dispatch(toggleIsFetching(true));
+    const response = await ProfileAPI.updateProfile(userProfile)
+    if (response.resultCode === 0) {
+        dispatch(showUserProfileThunckCreator(UserID));
+    }
+    else if (response.resultCode === 1) {
+        let errorMessage = response.messages.length > 0 ? response.messages[0] : "Uncaught message!";
+        // ошибка общая для формы
+       dispatch(stopSubmit("editProfileForm", { _error: errorMessage }));
+        //dispatch(stopSubmit("editProfileForm", { "contacts": {"facebook": errorMessage }})); - распарсить ошибку
+        return Promise.reject(errorMessage);
+    }
+    dispatch(toggleIsFetching(false));
+};
+
 // Санка для получения статуса пользователя с сервака
 export const getStatusThunckCreator = (UserID) => async (dispatch) => {
     dispatch(toggleIsFetching(true));
@@ -62,7 +89,6 @@ export const getStatusThunckCreator = (UserID) => async (dispatch) => {
     dispatch(setStatus(response));
     dispatch(toggleIsFetching(false));
 };
-
 
 // Санка для обновления статуса пользователя на серваке
 export const updateStatusThunckCreator = (status) => async (dispatch) => {
@@ -73,5 +99,16 @@ export const updateStatusThunckCreator = (status) => async (dispatch) => {
         dispatch(toggleIsFetching(false));
     }
 };
+
+// Санка для обновления фотки пользователя на серваке
+export const saveProfilePhotoThunckCreator = (file) => async (dispatch) => {
+    dispatch(toggleIsFetching(true));
+    const response = await ProfileAPI.saveProfilePhoto(file)
+    if (response.resultCode === 0) {
+        dispatch(setUserPhoto(response.data.photos))
+        dispatch(toggleIsFetching(false));
+    }
+};
+
 
 export default profileReducer;

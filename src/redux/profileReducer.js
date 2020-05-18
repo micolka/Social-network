@@ -93,11 +93,19 @@ export const getStatusThunckCreator = (UserID) => async (dispatch) => {
 // Санка для обновления статуса пользователя на серваке
 export const updateStatusThunckCreator = (status) => async (dispatch) => {
     dispatch(toggleIsFetching(true));
-    const response = await ProfileAPI.updateStatus(status)
-    if (response.resultCode === 0) {
-        dispatch(setStatus(status));
-        dispatch(toggleIsFetching(false));
+    try {
+        const response = await ProfileAPI.updateStatus(status)
+        if (response.resultCode === 0) {
+            dispatch(setStatus(status));   
+        }
+        if (response.resultCode === 1){
+            console.log("mas length 300");           
+        }
     }
+    catch(error) {
+        console.log("some err");
+    }
+    dispatch(toggleIsFetching(false));
 };
 
 // Санка для обновления фотки пользователя на серваке

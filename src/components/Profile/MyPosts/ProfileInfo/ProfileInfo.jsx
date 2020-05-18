@@ -66,7 +66,7 @@ const ProfileData = ({profile, isOwner, switchToEditMode}) => {
         </div>
         <b>Contacts: </b> {
             Object.keys(profile.contacts).map(key => {
-                return <Contacts key={key} contactMean={key} contactValue={profile.contacts[key]} />
+                    return profile.contacts[key] && <Contacts key={key} contactMean={key} contactValue={profile.contacts[key]} />
             })
         }
         {isOwner && <button className={s.btnEditP} onClick={switchToEditMode}>Edit information</button>}

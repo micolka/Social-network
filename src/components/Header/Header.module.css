@@ -1,22 +1,21 @@
 .header{
     grid-area: h;
-    background-color: #203a7b;
+    background-color: #1a2e53;
     display: grid;
     grid-template-columns: 1fr 2fr 0.5fr;
-  }
+    border-bottom: 1px solid #0b1830;
+}
 
 .logoImg {
     width: 150px;
 }
 
-.preloader {
-    background-color: #203a7b;
+.preloader {    
 }
 
 .loginBlock {
     margin: auto;
     float: right;
-    background-color: #203a7b;
     color: #daf107;
 }
 

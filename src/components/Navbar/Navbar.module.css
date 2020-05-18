@@ -1,8 +1,10 @@
 .nav{
-  background-color: #19256c;
+  background-color: #1a2e53;
   padding: 20px;
   display: flex;
   flex-direction: column;
+  border-top: 1px solid #41619c;
+  border-right: 1px solid #41619c;
 }
 /*настройка кнопок менюшки*/
 .items .item a {

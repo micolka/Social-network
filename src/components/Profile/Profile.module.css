@@ -1,13 +1,13 @@
 .profileBlock {
     display: grid;
     grid-template-rows: 1.3fr 3fr;
+    background-color: #1a2e53;
 }
 
 .postContainer {
-
+ 
 }
 
 .profileInfo {
-    background-color: #34495e;
 
 }

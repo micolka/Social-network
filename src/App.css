@@ -11,7 +11,7 @@
     margin: 0 auto;
     width: 1000px;
     height: 700px;
-    background-color: #1f2d39;
+    background-color: #1a2e53;
     position: relative;
 }
 .preloaderTriangle {
@@ -23,7 +23,10 @@
 
 .app-wrapper-content {
     grid-area: c;
-    background-color: #34495e;
+    color: rgb(230, 210, 125);
+    background-color: #1a2e53;
+    border-top: 1px solid #41619c;
+    border-left: 1px solid #0b1830;
 }
 
 

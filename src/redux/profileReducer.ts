@@ -1,11 +1,15 @@
+import { ProfileType, PhotosType, PostType } from './../types/types';
 import {ProfileAPI, UsersAPI} from "../API/API";
 import {toggleIsFetching} from "./usersReducer";
 import {stopSubmit} from "redux-form";
+
 
 const ADD_POST = 'myReactSocialNet/profileReducer/ADD-POST';
 const SET_USER_PROFILE = 'myReactSocialNet/profileReducer/SET-USER-PROFILE';
 const SET_STATUS = 'myReactSocialNet/profileReducer/SET-STATUS';
 const SET_USER_PHOTO = 'myReactSocialNet/profileReducer/SET-USER-PHOTO';
+
+
 
 let initialState = {
     posts: [
@@ -13,12 +17,15 @@ let initialState = {
         {id: 2, message: 'Que pasa aqui?', likeCount: 12},
         {id: 3, message: 'Vamos a la plalla', likeCount: 50},
         {id: 4, message: 'Quiero salir a calle!', likeCount: 2}
-    ],
-    profile: null,
+    ] as Array<PostType>,
+    profile: null as ProfileType | null,
     status: '',
+    textAreaValue: ''
 };
 
-const profileReducer = (state = initialState, action) => {
+export type InitialStateType = typeof initialState;
+
+const profileReducer = (state = initialState, action: any): InitialStateType => {
     switch (action.type) {
         case ADD_POST: {
             return  {
@@ -42,22 +49,42 @@ const profileReducer = (state = initialState, action) => {
         case SET_USER_PHOTO: {
             return {
                 ...state,
-                profile: {...state.profile, photos: action.photos}
+                profile: {...state.profile, photos: action.photos} as ProfileType
             };
         }
         default: return state;
     }
 };
 
+type AddPostType = {
+    type: typeof ADD_POST,
+    postMessage: string
+}
+
+type SetUserProfileType = {
+    type: typeof SET_USER_PROFILE
+    profile: ProfileType
+}
+
+type SetStatusType = {
+    type: typeof SET_STATUS
+    status: string
+}
+
+type SetUserPhotoType = {
+    type: typeof SET_USER_PHOTO
+    photos: PhotosType
+}
+
 // Action creators. Создает экшены для вызова функций Profile
-export const addPost = (text) => ({type: ADD_POST,postMessage: text});
-export const setUserProfile = (profile) => ({type: SET_USER_PROFILE, profile});
-export const setStatus = (status) => ({type: SET_STATUS, status});
-export const setUserPhoto = (photos) => ({type: SET_USER_PHOTO, photos});
+export const addPost = (text: string): AddPostType => ({type: ADD_POST, postMessage: text});
+export const setUserProfile = (profile: ProfileType): SetUserProfileType => ({type: SET_USER_PROFILE, profile});
+export const setStatus = (status: string): SetStatusType => ({type: SET_STATUS, status});
+export const setUserPhoto = (photos: PhotosType): SetUserPhotoType => ({type: SET_USER_PHOTO, photos});
 
 
 // Санка для получения инфы о выбранном юзере
-export const showUserProfileThunckCreator = (UserID) => async (dispatch) => {
+export const showUserProfileThunckCreator = (UserID: number) => async (dispatch: any) => {
     dispatch(toggleIsFetching(true));
     const response = await UsersAPI.getProfile(UserID);
     dispatch(setUserProfile(response));
@@ -66,7 +93,7 @@ export const showUserProfileThunckCreator = (UserID) => async (dispatch) => {
 };
 
 // Санка для обновления данных профиля пользователя на серваке
-export const updateProfileThunckCreator = (userProfile, UserID) => async (dispatch) => {
+export const updateProfileThunckCreator = (userProfile: ProfileType, UserID: number) => async (dispatch: any) => {
     dispatch(toggleIsFetching(true));
     const response = await ProfileAPI.updateProfile(userProfile)
     if (response.resultCode === 0) {
@@ -83,7 +110,7 @@ export const updateProfileThunckCreator = (userProfile, UserID) => async (dispat
 };
 
 // Санка для получения статуса пользователя с сервака
-export const getStatusThunckCreator = (UserID) => async (dispatch) => {
+export const getStatusThunckCreator = (UserID: number) => async (dispatch: any) => {
     dispatch(toggleIsFetching(true));
     const response = await ProfileAPI.getStatus(UserID)
     dispatch(setStatus(response));
@@ -91,7 +118,7 @@ export const getStatusThunckCreator = (UserID) => async (dispatch) => {
 };
 
 // Санка для обновления статуса пользователя на серваке
-export const updateStatusThunckCreator = (status) => async (dispatch) => {
+export const updateStatusThunckCreator = (status: string) => async (dispatch: any) => {
     dispatch(toggleIsFetching(true));
     try {
         const response = await ProfileAPI.updateStatus(status)
@@ -109,7 +136,7 @@ export const updateStatusThunckCreator = (status) => async (dispatch) => {
 };
 
 // Санка для обновления фотки пользователя на серваке
-export const saveProfilePhotoThunckCreator = (file) => async (dispatch) => {
+export const saveProfilePhotoThunckCreator = (file: any) => async (dispatch: any) => {
     dispatch(toggleIsFetching(true));
     const response = await ProfileAPI.saveProfilePhoto(file)
     if (response.resultCode === 0) {

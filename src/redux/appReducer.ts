@@ -2,11 +2,19 @@ import {authMeThunckCreator} from "./authReducer";
 
 const SET_APP_INITIALISED = 'myReactSocialNet/appReducer/SET-APP-INITIALISED';
 
-let initialState = {
+export type InitialStateType = {
+    isInitialized: boolean
+}
+
+type SetAppInitialisedType = {
+    type: typeof SET_APP_INITIALISED
+}
+
+let initialState: InitialStateType = {
     isInitialized : false
 };
 
-const appReducer = (state = initialState, action) => {
+const appReducer = (state = initialState, action: SetAppInitialisedType): InitialStateType => {
     switch (action.type) {
         case SET_APP_INITIALISED: {
             return  {
@@ -19,11 +27,11 @@ const appReducer = (state = initialState, action) => {
 };
 
 // Акшин для инициализации приложения на старте
-export const setAppInitialised = () => ({type: SET_APP_INITIALISED});
+export const setAppInitialised = (): SetAppInitialisedType => ({type: SET_APP_INITIALISED});
 
 // Санка инициализации приложения
 export const setAppThunckCreator = () => {
-    return (dispatch) => {
+    return (dispatch: any) => {
         let promise = dispatch(authMeThunckCreator());
         //let promise1 = dispatch(somethingElse());
         //let promise2 = dispatch(anythingElse());

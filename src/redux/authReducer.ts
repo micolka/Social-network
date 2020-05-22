@@ -5,7 +5,15 @@ const SET_USER_DATA = 'myReactSocialNet/authReducer/SET-USER-DATA';
 const CLEAR_USER_DATA = 'myReactSocialNet/authReducer/CLEAR-USER-DATA';
 const SET_CAPTCHA_URL = 'myReactSocialNet/authReducer/SET-CAPTCHA-URL';
 
-let initialState = {
+export type InitialStateType = {
+    userId: number | null,
+    email: string | null,
+    login: string | null,
+    isAuthorised: boolean,
+    captchaURL: string | null
+};
+
+let initialState: InitialStateType = {
     userId: null,
     email: null,
     login: null,
@@ -13,7 +21,7 @@ let initialState = {
     captchaURL: null
 };
 
-const authReducer = (state = initialState, action) => {
+const authReducer = (state = initialState, action: any): InitialStateType => {
     switch (action.type) {
         case SET_USER_DATA: {
             return  {
@@ -27,7 +35,8 @@ const authReducer = (state = initialState, action) => {
                 userId: null,
                 email: null,
                 login: null,
-                isAuthorised: false
+                isAuthorised: false,
+                captchaURL: null
             };
         }
         case SET_CAPTCHA_URL: {
@@ -37,13 +46,36 @@ const authReducer = (state = initialState, action) => {
     }
 };
 
+type SetAuthUserDataActionDataType = {
+    userId: number
+    email: string
+    login: string
+}
+type SetAuthUserDataActionType = {
+    type: typeof SET_USER_DATA, 
+    data: SetAuthUserDataActionDataType
+};
+
 // Action creators. Создает экшены для вызова функций authReducer
-export const setAuthUserData = (userId, email, login) => ({type: SET_USER_DATA, data: {userId, email, login}});
-export const clearAuthUserData = () => ({type: CLEAR_USER_DATA});
-export const setCaptchaURL = (url) => ({type: SET_CAPTCHA_URL, url});
+export const setAuthUserData = (userId: number, email: string, login: string): SetAuthUserDataActionType => ({
+    type: SET_USER_DATA, 
+    data: {userId, email, login}
+});
+
+type ClearAuthUserDataActionType = {
+    type: typeof CLEAR_USER_DATA
+};
+export const clearAuthUserData = (): ClearAuthUserDataActionType => ({type: CLEAR_USER_DATA});
+
+type SetCaptchaURLActionType = {
+    type: typeof SET_CAPTCHA_URL 
+    url: string
+};
+
+export const setCaptchaURL = (url: string): SetCaptchaURLActionType  => ({type: SET_CAPTCHA_URL, url});
 
 // Санка получения данных залогиненного пользователя
-export const authMeThunckCreator = () => async (dispatch) => {
+export const authMeThunckCreator = () => async (dispatch: any) => {
     let response = await AuthAPI.getAuthMe();
     if (response.resultCode === 0) {
         let {id, login, email} = response.data;
@@ -52,7 +84,7 @@ export const authMeThunckCreator = () => async (dispatch) => {
 };
 
 // Санка для логина на серваке
-export const loginThunckCreator = (email, password, rememberMe, captcha) => async (dispatch) => {
+export const loginThunckCreator = (email: string, password: string, rememberMe: boolean, captcha: string) => async (dispatch:any) => {
     let response = await AuthAPI.loginMe(email, password, rememberMe, captcha);
     if (response.resultCode === 0) {
         dispatch(authMeThunckCreator());
@@ -67,7 +99,7 @@ export const loginThunckCreator = (email, password, rememberMe, captcha) => asyn
 };
 
 // Санка для отлогинивания/отключения с сервака
-export const exitThunckCreator = () => async (dispatch) => {
+export const exitThunckCreator = () => async (dispatch: any) => {
     let response = await AuthAPI.exitMe();
     if (response.resultCode === 0) {
         dispatch(clearAuthUserData());
@@ -75,7 +107,7 @@ export const exitThunckCreator = () => async (dispatch) => {
 };
 
 // Санка для получения капчи
-export const getCaptchaThunckCreator = () => async (dispatch) => {
+export const getCaptchaThunckCreator = () => async (dispatch: any) => {
     let response = await AuthAPI.getCaptchaURL();
     dispatch(setCaptchaURL(response.url));
 };

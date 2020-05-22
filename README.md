@@ -1,3 +1,7 @@
+Обучающий проект социальной сети на React/Redux по мотивам курса лекций на ютуб-канале IT-KAMASUTRA (https://www.youtube.com/playlist?list=PLcvhF2Wqh7DNVy1OCUpG3i5lyxyBWhGZ8).
+
+В ветке gh-pages расположены билд проекта доступный для обозрения по ссылке: https://micolka.github.io/Social-network/#/
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

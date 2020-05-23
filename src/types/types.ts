@@ -1,3 +1,4 @@
+// Types from profileReducer
 export type PostType = {
     id: number
     message: string
@@ -21,18 +22,30 @@ export type ContactsType = {
 }
 
 export type ProfileType = {
-    userId: string
+    userId: number
     lookingForAJob: boolean
     lookingForAJobDescription: string
     fullName: string
+    aboutMe: string
     contacts: ContactsType
     photos: PhotosType
 }
 
+// Types from userdsReducer
 export type UserType = {
     name: string
     id: number
     photos: PhotosType
     status: string | null,
     followed: boolean
+}
+
+// Types from dialogsReducer
+export type DialogType = {
+    id: number
+    name: string
+}
+export type MessagesType = {
+    id: number
+    message: string
 }

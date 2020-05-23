@@ -1,7 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, ChangeEvent} from "react";
 
-const ProfileStatusWithHooks = (props) => {
+type PropsType = {
+    status: string
+    isOwner: boolean
+    updateStatus: (newStatus: string) => void
+}
 
+const ProfileStatusWithHooks: React.FC<PropsType> = (props) => {
 
     // Пример использования hook / хуков
     // Локальный стейт для сосхранения временного статуса и функции для его изменения
@@ -26,7 +31,7 @@ const ProfileStatusWithHooks = (props) => {
     }
 
     // Метод обрабатывает изменение статуса. Отправляет инфу на сервак.
-    const onStatusChange = (e) => {
+    const onStatusChange = (e: ChangeEvent<HTMLInputElement>) => {
             setlocalStatus(e.currentTarget.value);
     }
 

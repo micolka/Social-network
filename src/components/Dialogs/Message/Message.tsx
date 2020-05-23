@@ -1,8 +1,7 @@
 import React from "react";
 import s from './Message.module.css'
-//import {NavLink} from "react-router-dom";
 
-const Message = (props) => {
+const Message = (props:any) => {
     return (
         <div className={s.message}>
             <img

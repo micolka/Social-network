@@ -2,17 +2,39 @@ import React from "react";
 import {connect} from "react-redux";
 import Users from "./Users";
 import {
-    setCurrentPage, toggleIsFollowingProgress,
-    getUsersThunckCreator, unfollowUserThunckCreator,
-    followUserThunckCreator
+    setCurrentPage,getUsersThunckCreator, 
+    unfollowUserThunckCreator, followUserThunckCreator
 } from "../../redux/usersReducer";
 import {compose} from "redux";
 import {
     currentPageSelector, followingQueie, isFetchingSelector,
     pageSizeSelector, totalUsersCountSelector, usersSuperSelector
 } from "../../redux/selectors/usersSelector";
+import { UserType } from "../../types/types";
+import { AppStateType } from "../../redux/reduxStore";
 
-class UsersAPIContainer extends React.Component {
+type MapStateToPropsType ={
+    users: Array<UserType>
+    pageSize: number
+    totalUsersCount: number
+    currentPage: number
+    isFetching: boolean
+    followingQueie: Array<number>
+}
+
+type MapDispatchToPropsType ={
+    getUsers: (currentPage: number, pageSize: number) => (void)
+    setCurrentPage: (checkedPage: number) => (void)
+    unfollowUserThunckCreator: (id: number) => (void)
+    followUserThunckCreator: (id: number) => (void)
+}
+
+type OwnPropsType = {
+}
+
+type PropsType = MapStateToPropsType & MapDispatchToPropsType & OwnPropsType;
+
+class UsersAPIContainer extends React.Component<PropsType> {
 
     // Первая отрисовка страницы с юзерами
     componentDidMount() {
@@ -20,7 +42,7 @@ class UsersAPIContainer extends React.Component {
     }
 
     // Функция переключения страницы с юзерами
-    onPageChanged = (checkedPage) => {
+    onPageChanged = (checkedPage: number) => {
         this.props.setCurrentPage(checkedPage);
         this.props.getUsers(checkedPage, this.props.pageSize);
     };
@@ -31,16 +53,17 @@ class UsersAPIContainer extends React.Component {
                    onPageChanged={this.onPageChanged}
                    users={this.props.users}
                    followingQueie={this.props.followingQueie}
-                   toggleIsFollProgr={this.props.toggleIsFollowingProgress}
                    unfollowUser={this.props.unfollowUserThunckCreator}
                    followUser={this.props.followUserThunckCreator}
+                   pageSize={this.props.pageSize}
+                   totalUsersCount={this.props.totalUsersCount}
             />
         </>
     }
 }
 
 // Пример исплользования селекторов (уроки 81-83)
-const mapToStateProps = (state) => {
+const mapToStateProps = (state: AppStateType): MapStateToPropsType => {
     return {
         // users: usersSelector(state),
         // использование сложного селектора
@@ -54,8 +77,9 @@ const mapToStateProps = (state) => {
 };
 
 export default compose(
-    connect(mapToStateProps, {setCurrentPage, toggleIsFollowingProgress,
-        getUsers: getUsersThunckCreator, unfollowUserThunckCreator, followUserThunckCreator}),
-   // withAuthRedirect
+    connect<MapStateToPropsType, MapDispatchToPropsType, OwnPropsType, AppStateType>(
+        mapToStateProps, 
+        {setCurrentPage, getUsers: getUsersThunckCreator, unfollowUserThunckCreator, followUserThunckCreator}),
+        // withAuthRedirect
 )(UsersAPIContainer);
 

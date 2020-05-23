@@ -3,8 +3,20 @@ import styles from './users.module.css';
 import userDefaultPhoto from '../../asets/images/userDefaultPhoto.png'
 import {NavLink} from "react-router-dom";
 import Paginator from "../common/Paginator/Paginator";
+import { UserType } from "../../types/types";
 
-const Users = ({totalUsersCount, pageSize, onPageChanged, currentPage, ...props}) => {
+type PropsType = {
+    totalUsersCount: number
+    pageSize: number
+    currentPage: number
+    onPageChanged: (pageNumber: number) => void
+    users: Array<UserType>
+    followingQueie: Array<number>
+    unfollowUser: (id: number) => (void)
+    followUser: (id: number) => (void)
+}
+
+const Users: React.FC<PropsType> = ({totalUsersCount, pageSize, onPageChanged, currentPage, ...props}) => {
 
     return <div>
         <Paginator totalUsersCount={totalUsersCount} pageSize={pageSize}

@@ -1,11 +1,22 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import s from './ProfileInfo.module.css'
 import userDefaultPhoto from "../../../../asets/images/userDefaultPhoto.png";
 import ProfileStatusWithHooks from "../../ProfileStatus/ProfileStatusWithHooks";
 import { useState } from 'react';
 import ProfileDataReduxForm from './ProfileDataForm'
+import { ProfileType } from '../../../../types/types';
 
-const ProfileInfo = (props) => {
+type ProfileInfoType = {
+    profile: ProfileType
+    isOwner: boolean
+    status: string
+    toggleFetching: (isFetching: boolean) => (void)
+    updateStatus: (newStatus: string) => void
+    updateProfileInfo: (formData: ProfileType, userId: number) => any
+    savePhoto: (file: any) => (void)
+}
+
+const ProfileInfo = (props: ProfileInfoType) => {
 
     const [editMode, setEditMode] = useState(false);
 
@@ -17,14 +28,14 @@ const ProfileInfo = (props) => {
         props.toggleFetching(false);
     }
     // Обновление фото
-    const onMainPhotoSelected = (e) => {
-        if (e.target.files.length) {
+    const onMainPhotoSelected = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files !== null) {
             props.savePhoto(e.target.files[0]);
         }
     };
 
     // Редактирование профайла
-    const onSubmit = (formData) => {
+    const onSubmit = (formData: any) => {
         props.updateProfileInfo(formData, props.profile.userId).then(
             () => {
                 setEditMode(false);   
@@ -42,6 +53,7 @@ const ProfileInfo = (props) => {
                     <label className={s.btnSendImage} htmlFor={"input_file"}>Change avatar</label>
                     </div>}
                     {editMode 
+                        // @ts-ignore
                         ? <ProfileDataReduxForm initialValues={props.profile} profile={props.profile} onSubmit={onSubmit}/> 
                         : <ProfileData switchToEditMode={ () => {setEditMode(true)}} isOwner={props.isOwner} profile={props.profile}/>}
                     
@@ -50,7 +62,13 @@ const ProfileInfo = (props) => {
     );
 };
 
-const ProfileData = ({profile, isOwner, switchToEditMode}) => {
+type ProfileDataType = {
+    profile: ProfileType
+    isOwner: boolean
+    switchToEditMode: () => (void)
+}
+
+const ProfileData: React.FC<ProfileDataType> = ({profile, isOwner, switchToEditMode}) => {
     return <div>
         <div>
             <b>Full name: </b> {profile.fullName}
@@ -66,6 +84,7 @@ const ProfileData = ({profile, isOwner, switchToEditMode}) => {
         </div>
         <b>Contacts: </b> {
             Object.keys(profile.contacts).map(key => {
+                    // @ts-ignore
                     return profile.contacts[key] && <Contacts key={key} contactMean={key} contactValue={profile.contacts[key]} />
             })
         }
@@ -73,7 +92,12 @@ const ProfileData = ({profile, isOwner, switchToEditMode}) => {
     </div>
 };
 
-const Contacts = ({ contactMean, contactValue }) => {
+type ContactsType = {
+    contactMean: string
+    contactValue: string
+}
+
+const Contacts: React.FC<ContactsType> = ({ contactMean, contactValue }) => {
     return <div className={s.Contacts}><b>{contactMean}</b>: {contactValue}</div>
 };
 

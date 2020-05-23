@@ -1,29 +1,30 @@
+import { AppStateType } from './../reduxStore';
 import {createSelector} from "reselect";
 
-export const pageSizeSelector = (state) => {
+export const pageSizeSelector = (state: AppStateType) => {
     return state.usersData.pageSize;
 }
 
-export const totalUsersCountSelector = (state) => {
+export const totalUsersCountSelector = (state: AppStateType) => {
     return state.usersData.totalUsersCount;
 }
 
-export const currentPageSelector = (state) => {
+export const currentPageSelector = (state: AppStateType) => {
     return state.usersData.currentPage;
 }
 
-export const isFetchingSelector = (state) => {
+export const isFetchingSelector = (state: AppStateType) => {
     return state.usersData.isFetching;
 }
 
-export const followingQueie = (state) => {
+export const followingQueie = (state: AppStateType) => {
     return state.usersData.followingQueie;
 }
 
 
 // Пример работы с библиотекой reselect
 // Вспомогательный, примитивный селектор
-const getUsersInnerSel = (state) => {
+const getUsersInnerSel = (state: AppStateType) => {
     return state.usersData.users;
 }
 

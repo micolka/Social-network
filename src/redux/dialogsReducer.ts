@@ -1,13 +1,6 @@
-const ADD_DIALOG_MESSAGE = 'myReactSocialNet/dialogsReducer/ADD-DIALOG-MESSAGE';
+import { DialogType, MessagesType } from './../types/types';
 
-type DialogType = {
-    id: number
-    name: string
-}
-type MessagesType = {
-    id: number
-    message: string
-}
+const ADD_DIALOG_MESSAGE = 'myReactSocialNet/dialogsReducer/ADD-DIALOG-MESSAGE';
 
 let initialState = {
     dialogs: [
@@ -27,7 +20,9 @@ let initialState = {
 
 export type InitialStateType = typeof initialState;
 
-const dialogsReducer = (state = initialState, action: any): InitialStateType => {
+
+
+const dialogsReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
 
     switch (action.type) {
         case ADD_DIALOG_MESSAGE:
@@ -39,6 +34,8 @@ const dialogsReducer = (state = initialState, action: any): InitialStateType => 
             return state;
     }
 };
+
+type ActionsTypes = AddDialogMessageType;
 
 type AddDialogMessageType = {
     type: typeof ADD_DIALOG_MESSAGE,

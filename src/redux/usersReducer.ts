@@ -1,5 +1,9 @@
+import { AppStateType } from './reduxStore';
 import { UserType } from './../types/types';
 import {UsersAPI} from "../API/API";
+import { ThunkAction } from 'redux-thunk';
+import { Dispatch } from 'redux';
+
 
 const FOLLOW = 'myReactSocialNet/usersReducer/FOLLOW';
 const UNFOLLOW = 'myReactSocialNet/usersReducer/UNFOLLOW';
@@ -33,7 +37,7 @@ let initialState = {
 
 export type InitialStateType = typeof initialState;
 
-const usersReducer = (state = initialState, action: any): InitialStateType => {
+const usersReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
     switch (action.type) {
         case FOLLOW:
             return {
@@ -64,6 +68,9 @@ const usersReducer = (state = initialState, action: any): InitialStateType => {
     }
 };
 
+type ActionsTypes = FollowType | UnfollowType | SetUsersType | SetCurrentPageType |
+    SetTotalUsersCountType | ToggleIsFetchingType | ToggleIsFollowingType;
+
 type FollowType = {
     type: typeof FOLLOW
     userId: number
@@ -84,7 +91,7 @@ type SetTotalUsersCountType = {
     type: typeof SET_TOTAL_USERS_COUNT
     totalUsersCount: number
 }
-type ToggleIsFetchingType = { 
+export type ToggleIsFetchingType = { 
     type: typeof TOGGLE_IS_FETCHING
     isFetching: boolean
 }
@@ -103,17 +110,23 @@ export const toggleIsFetching = (isFetching: boolean): ToggleIsFetchingType => (
 export const toggleIsFollowingProgress = (followingInProgress: boolean, userId: number): ToggleIsFollowingType => ({
     type: TOGGLE_IS_FOLLOWING_PROGRESS, followingInProgress, userId});
 
-// Санка для получения списка юзеров на определенной странице
-export const getUsersThunckCreator = (currentPage: number, pageSize: number) => async (dispatch: any) => {
-    dispatch(toggleIsFetching(true));
-    // Получаем с сервера информацию о юзерах
-    let response = await UsersAPI.getUsers(currentPage, pageSize);
-    dispatch(toggleIsFetching(false));
-    dispatch(setUsers(response.items));
-    dispatch(setTotalUsersCount(response.totalCount));
-};
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
+type DispatchType = Dispatch<ActionsTypes>;
 
-const followUnfollowFlow = async (dispatch: any, userId: number, apiMethod: any, followAction: any) => {
+// Санка для получения списка юзеров на определенной странице
+export const getUsersThunckCreator = (currentPage: number, pageSize: number): ThunkType =>
+    async (dispatch) => {
+        dispatch(toggleIsFetching(true));
+        // Получаем с сервера информацию о юзерах
+        let response = await UsersAPI.getUsers(currentPage, pageSize);
+        dispatch(toggleIsFetching(false));
+        dispatch(setUsers(response.items));
+        dispatch(setTotalUsersCount(response.totalCount));
+    };
+
+const _followUnfollowFlow = async (dispatch: DispatchType, userId: number, apiMethod: any,
+    followAction: (userId: number) => (UnfollowType | FollowType)) => {
+    dispatch(toggleIsFetching(true));
     dispatch(toggleIsFollowingProgress(true, userId));
     // Отписка от юзера
     let response = await apiMethod(userId);
@@ -121,16 +134,17 @@ const followUnfollowFlow = async (dispatch: any, userId: number, apiMethod: any,
         dispatch(followAction(userId));
     }
     dispatch(toggleIsFollowingProgress(false, userId));
+    dispatch(toggleIsFetching(false));
 };
 
 // Санка для отписки от юзера с возможностью блока кнопки
-export const unfollowUserThunckCreator = (userId: number) =>  async (dispatch: any) => {
-    followUnfollowFlow(dispatch, userId, UsersAPI.unfollowUser.bind(UsersAPI), unfollow);
+export const unfollowUserThunckCreator = (userId: number): ThunkType =>  async (dispatch) => {
+    _followUnfollowFlow(dispatch, userId, UsersAPI.unfollowUser.bind(UsersAPI), unfollow);
 };
 
 // Санка для подписки на юзера с возможностью блока кнопки
-export const followUserThunckCreator = (userId: number) => async (dispatch: any) => {
-    followUnfollowFlow(dispatch, userId, UsersAPI.followUser.bind(UsersAPI), follow);
+export const followUserThunckCreator = (userId: number): ThunkType => async (dispatch) => {
+    _followUnfollowFlow(dispatch, userId, UsersAPI.followUser.bind(UsersAPI), follow);
 };
 
 export default usersReducer;

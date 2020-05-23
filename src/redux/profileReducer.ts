@@ -1,7 +1,10 @@
 import { ProfileType, PhotosType, PostType } from './../types/types';
 import {ProfileAPI, UsersAPI} from "../API/API";
-import {toggleIsFetching} from "./usersReducer";
+import {toggleIsFetching, ToggleIsFetchingType} from "./usersReducer";
 import {stopSubmit} from "redux-form";
+import { ThunkAction } from "redux-thunk";
+import { AppStateType } from "./reduxStore";
+import { Dispatch } from "redux";
 
 
 const ADD_POST = 'myReactSocialNet/profileReducer/ADD-POST';
@@ -25,7 +28,7 @@ let initialState = {
 
 export type InitialStateType = typeof initialState;
 
-const profileReducer = (state = initialState, action: any): InitialStateType => {
+const profileReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
     switch (action.type) {
         case ADD_POST: {
             return  {
@@ -56,6 +59,8 @@ const profileReducer = (state = initialState, action: any): InitialStateType => 
     }
 };
 
+type ActionsTypes = AddPostType | SetUserProfileType | SetStatusType | SetUserPhotoType | ToggleIsFetchingType;
+
 type AddPostType = {
     type: typeof ADD_POST,
     postMessage: string
@@ -82,9 +87,11 @@ export const setUserProfile = (profile: ProfileType): SetUserProfileType => ({ty
 export const setStatus = (status: string): SetStatusType => ({type: SET_STATUS, status});
 export const setUserPhoto = (photos: PhotosType): SetUserPhotoType => ({type: SET_USER_PHOTO, photos});
 
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
+type DispatchType = Dispatch<ActionsTypes>;
 
 // Санка для получения инфы о выбранном юзере
-export const showUserProfileThunckCreator = (UserID: number) => async (dispatch: any) => {
+export const showUserProfileThunckCreator = (UserID: number): ThunkType => async (dispatch: Dispatch) => {
     dispatch(toggleIsFetching(true));
     const response = await UsersAPI.getProfile(UserID);
     dispatch(setUserProfile(response));
@@ -93,15 +100,17 @@ export const showUserProfileThunckCreator = (UserID: number) => async (dispatch:
 };
 
 // Санка для обновления данных профиля пользователя на серваке
-export const updateProfileThunckCreator = (userProfile: ProfileType, UserID: number) => async (dispatch: any) => {
+export const updateProfileThunckCreator = (userProfile: ProfileType, UserID: number): ThunkType => async (dispatch: DispatchType) => {
     dispatch(toggleIsFetching(true));
     const response = await ProfileAPI.updateProfile(userProfile)
     if (response.resultCode === 0) {
+        // @ts-ignore
         dispatch(showUserProfileThunckCreator(UserID));
     }
     else if (response.resultCode === 1) {
         let errorMessage = response.messages.length > 0 ? response.messages[0] : "Uncaught message!";
         // ошибка общая для формы
+        // @ts-ignore
        dispatch(stopSubmit("editProfileForm", { _error: errorMessage }));
         //dispatch(stopSubmit("editProfileForm", { "contacts": {"facebook": errorMessage }})); - распарсить ошибку
         return Promise.reject(errorMessage);
@@ -110,7 +119,7 @@ export const updateProfileThunckCreator = (userProfile: ProfileType, UserID: num
 };
 
 // Санка для получения статуса пользователя с сервака
-export const getStatusThunckCreator = (UserID: number) => async (dispatch: any) => {
+export const getStatusThunckCreator = (UserID: number): ThunkType => async (dispatch: DispatchType) => {
     dispatch(toggleIsFetching(true));
     const response = await ProfileAPI.getStatus(UserID)
     dispatch(setStatus(response));
@@ -118,7 +127,7 @@ export const getStatusThunckCreator = (UserID: number) => async (dispatch: any) 
 };
 
 // Санка для обновления статуса пользователя на серваке
-export const updateStatusThunckCreator = (status: string) => async (dispatch: any) => {
+export const updateStatusThunckCreator = (status: string): ThunkType => async (dispatch: DispatchType) => {
     dispatch(toggleIsFetching(true));
     try {
         const response = await ProfileAPI.updateStatus(status)
@@ -136,7 +145,7 @@ export const updateStatusThunckCreator = (status: string) => async (dispatch: an
 };
 
 // Санка для обновления фотки пользователя на серваке
-export const saveProfilePhotoThunckCreator = (file: any) => async (dispatch: any) => {
+export const saveProfilePhotoThunckCreator = (file: any): ThunkType => async (dispatch: DispatchType) => {
     dispatch(toggleIsFetching(true));
     const response = await ProfileAPI.saveProfilePhoto(file)
     if (response.resultCode === 0) {

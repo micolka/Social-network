@@ -1,6 +1,16 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 
-class ProfileStatus extends React.Component {
+type PropType = {
+    status: string
+    updateStatus: (newStatus: string) => void
+}
+type StateType ={
+    editMode: boolean
+    status: string
+}
+
+
+class ProfileStatus extends React.Component<PropType, StateType> {
     //statusInputRef = React.createRef();
 
     // Локальный стейт для сосхранения временного статуса
@@ -25,13 +35,13 @@ class ProfileStatus extends React.Component {
     }
 
     // Метод обрабатывает изменение статуса. Отправляет инфу на сервак.
-    onStatusChange = (e) => {
+    onStatusChange = (e: ChangeEvent<HTMLInputElement>) => {
         this.setState({
             status: e.currentTarget.value
         });
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps: PropType, prevState: StateType) {
         if (prevProps.status !== this.props.status) {
             this.setState({
                 status: this.props.status

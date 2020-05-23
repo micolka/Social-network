@@ -6,24 +6,25 @@ import {Redirect} from "react-router-dom";
 import {Field, reduxForm} from "redux-form";
 import {maxLengthCreator, requiredField} from "../../utils/validators/validators";
 import {TextArea} from "../../utils/validators/customTextArea";
+import { DialogType, MessagesType } from "../../types/types";
 
 
-const Dialogs = (props) => {
+const Dialogs = (props: any) => {
 
     // Если не в системе переход на страницу логина
     if (!props.isAuth) return <Redirect to={"/login"}/>;
 
     // данные для отрисовки списка чатов на странице Messages
-    let formatedDialogData = props.dialogsData.dialogs.map((elem) => {
+    let formatedDialogData = props.dialogsData.dialogs.map((elem: DialogType) => {
         return <DialogItem name={elem.name} id={elem.id}/>;
     });
     // данные для отрисовки списка сообщений на странице Messages
-    let formatedMessagesData = props.dialogsData.messages.map((elem) => {
+    let formatedMessagesData = props.dialogsData.messages.map((elem: MessagesType) => {
         return <Message message={elem.message} id={elem.id}/>
     });
 
     // обработка события Send Message
-    const onSubmit = (formData) => {
+    const onSubmit = (formData: any) => {
         let {messTxtValue} = formData;
         props.addDialogMessage(messTxtValue);
     };
@@ -43,7 +44,7 @@ const Dialogs = (props) => {
 
 let maxLength = maxLengthCreator(100);
 
-const SendMessageForm = (props) => {
+const SendMessageForm = (props: any) => {
     return <form onSubmit={props.handleSubmit}>
         <div>
             <Field placeholder={'Say hello to momy!'} name={"messTxtValue"}

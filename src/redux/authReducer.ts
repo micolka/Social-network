@@ -1,39 +1,28 @@
-import {AuthAPI, ResultCodesEnum, CaptchaIsRequiredEnum} from "../API/API";
+import {ResultCodesEnum} from "../API/API";
+import { AuthAPI, CaptchaIsRequiredEnum } from "../API/AuthAPI";
 import {stopSubmit} from "redux-form";
-import { ThunkAction } from 'redux-thunk';
-import { Dispatch } from 'redux';
-import { AppStateType } from './reduxStore';
+import { InferActionsTypes, BaseThunkType } from "../types/types";
 
-const SET_USER_DATA = 'myReactSocialNet/authReducer/SET-USER-DATA';
-const CLEAR_USER_DATA = 'myReactSocialNet/authReducer/CLEAR-USER-DATA';
-const SET_CAPTCHA_URL = 'myReactSocialNet/authReducer/SET-CAPTCHA-URL';
-
-export type InitialStateType = {
-    userId: number | null,
-    email: string | null,
-    login: string | null,
-    isAuthorised: boolean,
-    captchaURL: string | null
-};
-
-let initialState: InitialStateType = {
-    userId: null,
-    email: null,
-    login: null,
+let initialState = {
+    userId: null as number | null,
+    email: null as string | null,
+    login: null as string | null,
     isAuthorised: false,
-    captchaURL: null
+    captchaURL: null as string | null
 };
 
-const authReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
+export type InitialStateType = typeof initialState;
+
+const authReducer = (state = initialState, action: AuthActionsTypes): InitialStateType => {
     switch (action.type) {
-        case SET_USER_DATA: {
+        case 'RSN/auth/SET-USER-DATA': {
             return  {
                 ...state,
                 ...action.data,
                 isAuthorised: true
             };
         }
-        case CLEAR_USER_DATA: {
+        case 'RSN/auth/CLEAR-USER-DATA': {
             return  {
                 userId: null,
                 email: null,
@@ -42,63 +31,42 @@ const authReducer = (state = initialState, action: ActionsTypes): InitialStateTy
                 captchaURL: null
             };
         }
-        case SET_CAPTCHA_URL: {
+        case 'RSN/auth/SET-CAPTCHA-URL': {
             return {...state, captchaURL: action.url}
         }
         default: return state;
     }
 };
 
-type ActionsTypes = SetAuthUserDataActionType | ClearAuthUserDataActionType | SetCaptchaURLActionType;
-
-type SetAuthUserDataActionDataType = {
-    userId: number
-    email: string
-    login: string
-}
-export type SetAuthUserDataActionType = {
-    type: typeof SET_USER_DATA, 
-    data: SetAuthUserDataActionDataType
-};
-
-type ClearAuthUserDataActionType = {
-    type: typeof CLEAR_USER_DATA
-};
-
-type SetCaptchaURLActionType = {
-    type: typeof SET_CAPTCHA_URL 
-    url: string
-};
+type AuthActionsTypes = InferActionsTypes<typeof authActions>;
 
 // Action creators. Создает экшены для вызова функций authReducer
-export const setAuthUserData = (userId: number, email: string, login: string): SetAuthUserDataActionType => ({
-    type: SET_USER_DATA, data: {userId, email, login}});
-export const clearAuthUserData = (): ClearAuthUserDataActionType => ({type: CLEAR_USER_DATA});
-export const setCaptchaURL = (url: string): SetCaptchaURLActionType  => ({type: SET_CAPTCHA_URL, url});
+export const authActions = {
+    setAuthUserData: (userId: number, email: string, login: string) => ({
+        type: 'RSN/auth/SET-USER-DATA', data: { userId, email, login }} as const),
+    clearAuthUserData: () => ({ type: 'RSN/auth/CLEAR-USER-DATA' } as const),
+    setCaptchaURL: (url: string) => ({ type: 'RSN/auth/SET-CAPTCHA-URL', url} as const)
+}
 
-
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
-type DispatchType = Dispatch<ActionsTypes>;
+type ThunkType = BaseThunkType<AuthActionsTypes>;
 
 // Санка получения данных залогиненного пользователя
-export const authMeThunckCreator = (): ThunkType => async (dispatch: DispatchType) => {
+export const authMeThunckCreator = (): ThunkType => async (dispatch) => {
     let response = await AuthAPI.getAuthMe();
     if (response.resultCode === ResultCodesEnum.Succes) {
         let {id, login, email} = response.data;
-        dispatch(setAuthUserData(id, email, login));
+        dispatch(authActions.setAuthUserData(id, email, login));
     }
 };
 
 // Санка для логина на серваке
 export const loginThunckCreator = (email: string, password: string, 
-    rememberMe: boolean, captcha: string): ThunkType => async (dispatch: DispatchType) => {
+    rememberMe: boolean, captcha: string): ThunkType => async (dispatch) => {
     let response = await AuthAPI.loginMe(email, password, rememberMe, captcha);
     if (response.resultCode === ResultCodesEnum.Succes) {
-        // @ts-ignore
         dispatch(authMeThunckCreator());
     } else {
         if (response.resultCode === CaptchaIsRequiredEnum.CaptchaIsRequired) {
-            // @ts-ignore
             dispatch(getCaptchaThunckCreator());
         }
         let errorMessage = response.messages.length > 0 ? response.messages[0] : "Uncaught message!";
@@ -108,17 +76,17 @@ export const loginThunckCreator = (email: string, password: string,
 };
 
 // Санка для отлогинивания/отключения с сервака
-export const exitThunckCreator = (): ThunkType => async (dispatch: DispatchType) => {
+export const exitThunckCreator = (): ThunkType => async (dispatch) => {
     let response = await AuthAPI.exitMe();
     if (response.resultCode === ResultCodesEnum.Succes) {
-        dispatch(clearAuthUserData());
+        dispatch(authActions.clearAuthUserData());
     }
 };
 
 // Санка для получения капчи
-export const getCaptchaThunckCreator = (): ThunkType => async (dispatch: DispatchType) => {
+export const getCaptchaThunckCreator = (): ThunkType => async (dispatch) => {
     let response = await AuthAPI.getCaptchaURL();
-    dispatch(setCaptchaURL(response.url));
+    dispatch(authActions.setCaptchaURL(response.url));
 };
 
 export default authReducer;

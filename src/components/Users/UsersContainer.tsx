@@ -2,7 +2,7 @@ import React from "react";
 import {connect} from "react-redux";
 import Users from "./Users";
 import {
-    setCurrentPage,getUsersThunckCreator, 
+    usersActions, getUsersThunckCreator, 
     unfollowUserThunckCreator, followUserThunckCreator
 } from "../../redux/usersReducer";
 import {compose} from "redux";
@@ -79,7 +79,7 @@ const mapToStateProps = (state: AppStateType): MapStateToPropsType => {
 export default compose(
     connect<MapStateToPropsType, MapDispatchToPropsType, OwnPropsType, AppStateType>(
         mapToStateProps, 
-        {setCurrentPage, getUsers: getUsersThunckCreator, unfollowUserThunckCreator, followUserThunckCreator}),
+        {setCurrentPage: usersActions.setCurrentPage, getUsers: getUsersThunckCreator, unfollowUserThunckCreator, followUserThunckCreator}),
         // withAuthRedirect
 )(UsersAPIContainer);
 

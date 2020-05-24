@@ -1,21 +1,15 @@
-import {authMeThunckCreator, SetAuthUserDataActionType} from "./authReducer";
-import { ThunkAction } from "redux-thunk";
-import { AppStateType } from "./reduxStore";
-import { Dispatch } from "redux";
+import {authMeThunckCreator} from "./authReducer";
+import { InferActionsTypes, BaseThunkType } from "../types/types";
 
-const SET_APP_INITIALISED = 'myReactSocialNet/appReducer/SET-APP-INITIALISED';
-
-export type InitialStateType = {
-    isInitialized: boolean
-}
-
-let initialState: InitialStateType = {
+let initialState = {
     isInitialized : false
 };
 
-const appReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
+export type InitialStateType = typeof initialState;
+
+const appReducer = (state = initialState, action: AppActionsTypes): InitialStateType => {
     switch (action.type) {
-        case SET_APP_INITIALISED: {
+        case 'RSN/app/SET-APP-INITIALISED': {
             return  {
                 ...state,
                 isInitialized: true
@@ -25,26 +19,23 @@ const appReducer = (state = initialState, action: ActionsTypes): InitialStateTyp
     }
 };
 
-type ActionsTypes = SetAppInitialisedType | SetAuthUserDataActionType;
+type AppActionsTypes = InferActionsTypes<typeof appActions>;
 
-type SetAppInitialisedType = {
-    type: typeof SET_APP_INITIALISED
-}
 // Акшин для инициализации приложения на старте
-export const setAppInitialised = (): SetAppInitialisedType => ({type: SET_APP_INITIALISED});
+export const appActions = {
+    setAppInitialised : () => ({type: 'RSN/app/SET-APP-INITIALISED'} as const)
+}
 
-type ThunkType = ThunkAction<void, AppStateType, unknown, ActionsTypes>;
-type DispatchType = Dispatch<ActionsTypes>;
+type ThunkType = BaseThunkType<AppActionsTypes, void>;
 
 // Санка инициализации приложения
 export const setAppThunckCreator = (): ThunkType => {
-    return (dispatch: DispatchType) => {
-        // @ts-ignore
+    return (dispatch) => {
         let promise = dispatch(authMeThunckCreator());
         //let promise1 = dispatch(somethingElse());
         //let promise2 = dispatch(anythingElse());
         Promise.all([promise  /* ,promise1...*/]).then(() => {
-            dispatch(setAppInitialised());
+            dispatch(appActions.setAppInitialised());
         });
     };
 };

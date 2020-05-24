@@ -1,6 +1,4 @@
-import { DialogType, MessagesType } from './../types/types';
-
-const ADD_DIALOG_MESSAGE = 'myReactSocialNet/dialogsReducer/ADD-DIALOG-MESSAGE';
+import { DialogType, MessagesType, InferActionsTypes } from './../types/types';
 
 let initialState = {
     dialogs: [
@@ -20,12 +18,9 @@ let initialState = {
 
 export type InitialStateType = typeof initialState;
 
-
-
-const dialogsReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
-
+const dialogsReducer = (state = initialState, action: DialogsActionsTypes): InitialStateType => {
     switch (action.type) {
-        case ADD_DIALOG_MESSAGE:
+        case 'RSN/dialogs/ADD-DIALOG-MESSAGE':
             return {
                 ...state,
                 messages: [...state.messages, {id: 5, message: action.postMessage}]
@@ -35,14 +30,11 @@ const dialogsReducer = (state = initialState, action: ActionsTypes): InitialStat
     }
 };
 
-type ActionsTypes = AddDialogMessageType;
-
-type AddDialogMessageType = {
-    type: typeof ADD_DIALOG_MESSAGE,
-    postMessage: string
-}
+type DialogsActionsTypes = InferActionsTypes<typeof dialogsActions>;;
 
 // Action creators. Создает экшены для вызова функций Dialogs
-export const addDialogMessage = (text: string): AddDialogMessageType => ({type : ADD_DIALOG_MESSAGE, postMessage: text});
+export const dialogsActions = {
+    addDialogMessage: (text: string) => ({ type: 'RSN/dialogs/ADD-DIALOG-MESSAGE', postMessage: text } as const)
+}
 
 export default dialogsReducer;

@@ -1,3 +1,7 @@
+import { AppStateType } from "../redux/reduxStore"
+import { ThunkAction } from "redux-thunk";
+import { Action } from "redux";
+
 // Types from profileReducer
 export type PostType = {
     id: number
@@ -49,3 +53,9 @@ export type MessagesType = {
     id: number
     message: string
 }
+
+// Common types for Reducers
+ type PropertiesTypes<T> = T extends {[key: string]: infer U} ? U : never;
+ export type InferActionsTypes<T extends {[key: string]: (...args: any[]) => any}> = ReturnType<PropertiesTypes<T>>; 
+
+export type BaseThunkType<A extends Action, R = Promise<void>> = ThunkAction<R, AppStateType, unknown, A>;

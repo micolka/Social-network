@@ -9,7 +9,7 @@ import {    getStatusThunckCreator,
 import {withRouter} from "react-router-dom";
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 import {compose} from "redux";
-import {toggleIsFetching} from "../../redux/usersReducer";
+import {usersActions} from "../../redux/usersReducer";
 
 class ProfileContainer extends React.Component {
 
@@ -59,7 +59,7 @@ export default compose(
                             updateStatus: updateStatusThunckCreator,
                             savePhoto: saveProfilePhotoThunckCreator,
                             updateProfileInfo:updateProfileThunckCreator,
-                            toggleIsFetching: toggleIsFetching}),
+                            toggleIsFetching: usersActions.toggleIsFetching}),
     withRouter,
     withAuthRedirect
 )(ProfileContainer);

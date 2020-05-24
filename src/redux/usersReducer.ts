@@ -1,17 +1,6 @@
-import { AppStateType } from './reduxStore';
-import { UserType } from './../types/types';
-import {UsersAPI} from "../API/API";
-import { ThunkAction } from 'redux-thunk';
+import { UserType, InferActionsTypes, BaseThunkType } from './../types/types';
+import { UsersAPI } from "../API/UsersAPI";
 import { Dispatch } from 'redux';
-
-
-const FOLLOW = 'myReactSocialNet/usersReducer/FOLLOW';
-const UNFOLLOW = 'myReactSocialNet/usersReducer/UNFOLLOW';
-const SET_USERS = 'myReactSocialNet/usersReducer/SET-USERS';
-const SET_CURRENT_PAGE = 'myReactSocialNet/usersReducer/SET-CURRENT-PAGE';
-const SET_TOTAL_USERS_COUNT = 'myReactSocialNet/usersReducer/SET-USERS-TOTAL-COUNT';
-const TOGGLE_IS_FETCHING = 'myReactSocialNet/usersReducer/TOGGLE-IS-FETCHING';
-const TOGGLE_IS_FOLLOWING_PROGRESS = 'myReactSocialNet/usersReducer/TOGGLE-IS-FOLLOWING-PROGRESS';
 
 const updateObjectIbArray = (items: Array<UserType>, itemId: number, newObjProps: FollowedType): Array<UserType> => {
     return items.map(user => {
@@ -37,27 +26,27 @@ let initialState = {
 
 export type InitialStateType = typeof initialState;
 
-const usersReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
+const usersReducer = (state = initialState, action: UsersActionsTypes): InitialStateType => {
     switch (action.type) {
-        case FOLLOW:
+        case 'RSN/users/FOLLOW':
             return {
                 ...state,
                 users: updateObjectIbArray(state.users, action.userId, {followed: true} )
             };
-        case UNFOLLOW:
+        case 'RSN/users/UNFOLLOW':
             return {
                 ...state,
                 users: updateObjectIbArray(state.users, action.userId, {followed: false} )
             };
-        case SET_USERS:
+        case 'RSN/users/SET-USERS':
             return {...state, users: action.users};
-        case SET_CURRENT_PAGE:
+        case 'RSN/users/SET-CURRENT-PAGE':
             return {...state, currentPage: action.currentPage};
-        case SET_TOTAL_USERS_COUNT:
+        case 'RSN/users/SET-USERS-TOTAL-COUNT':
             return {...state, totalUsersCount: action.totalUsersCount};
-        case TOGGLE_IS_FETCHING:
+        case 'RSN/users/TOGGLE-IS-FETCHING':
             return {...state, isFetching: action.isFetching};
-        case TOGGLE_IS_FOLLOWING_PROGRESS:
+        case 'RSN/users/TOGGLE-IS-FOLLOWING-PROGRESS':
             return {...state,
                     followingQueie: action.followingInProgress
                         ?  [...state.followingQueie, action.userId]
@@ -68,83 +57,55 @@ const usersReducer = (state = initialState, action: ActionsTypes): InitialStateT
     }
 };
 
-type ActionsTypes = FollowType | UnfollowType | SetUsersType | SetCurrentPageType |
-    SetTotalUsersCountType | ToggleIsFetchingType | ToggleIsFollowingType;
+export type UsersActionsTypes = InferActionsTypes<typeof usersActions>;
 
-type FollowType = {
-    type: typeof FOLLOW
-    userId: number
-}
-type UnfollowType = {
-    type: typeof UNFOLLOW
-    userId: number
-}
-type SetUsersType = { 
-    type: typeof SET_USERS
-    users: Array<UserType>
-}
-type SetCurrentPageType = { 
-    type: typeof SET_CURRENT_PAGE
-    currentPage: number
-}
-type SetTotalUsersCountType = { 
-    type: typeof SET_TOTAL_USERS_COUNT
-    totalUsersCount: number
-}
-export type ToggleIsFetchingType = { 
-    type: typeof TOGGLE_IS_FETCHING
-    isFetching: boolean
-}
-type ToggleIsFollowingType = { 
-    type: typeof TOGGLE_IS_FOLLOWING_PROGRESS
-    followingInProgress: boolean
-    userId: number
-}
 // Action creators. Создает экшены для вызова функций Profile
-export const follow = (userId: number): FollowType => ({type: FOLLOW, userId: userId});
-export const unfollow = (userId: number): UnfollowType => ({type: UNFOLLOW, userId: userId});
-export const setUsers = (users: Array<UserType>): SetUsersType => ({type: SET_USERS, users: users});
-export const setCurrentPage = (currentPage: number): SetCurrentPageType => ({type: SET_CURRENT_PAGE, currentPage: currentPage});
-export const setTotalUsersCount = (totalCount: number): SetTotalUsersCountType => ({type: SET_TOTAL_USERS_COUNT, totalUsersCount: totalCount});
-export const toggleIsFetching = (isFetching: boolean): ToggleIsFetchingType => ({type: TOGGLE_IS_FETCHING, isFetching: isFetching});
-export const toggleIsFollowingProgress = (followingInProgress: boolean, userId: number): ToggleIsFollowingType => ({
-    type: TOGGLE_IS_FOLLOWING_PROGRESS, followingInProgress, userId});
+export const usersActions = {
+    follow : (userId: number) => ({type: 'RSN/users/FOLLOW', userId: userId} as const),
+    unfollow : (userId: number) => ({type: 'RSN/users/UNFOLLOW', userId: userId} as const),
+    setUsers : (users: Array<UserType>) => ({type: 'RSN/users/SET-USERS', users: users} as const),
+    setCurrentPage : (currentPage: number) => ({type: 'RSN/users/SET-CURRENT-PAGE', currentPage: currentPage} as const),
+    setTotalUsersCount : (totalCount: number) => ({type: 'RSN/users/SET-USERS-TOTAL-COUNT', totalUsersCount: totalCount} as const),
+    toggleIsFetching : (isFetching: boolean) => ({type: 'RSN/users/TOGGLE-IS-FETCHING', isFetching: isFetching} as const),
+    toggleIsFollowingProgress : (followingInProgress: boolean, userId: number) => ({
+        type: 'RSN/users/TOGGLE-IS-FOLLOWING-PROGRESS', followingInProgress, userId} as const)
+}
 
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
-type DispatchType = Dispatch<ActionsTypes>;
+type ThunkType = BaseThunkType<UsersActionsTypes>;
+type DispatchType = Dispatch<UsersActionsTypes>;
 
 // Санка для получения списка юзеров на определенной странице
 export const getUsersThunckCreator = (currentPage: number, pageSize: number): ThunkType =>
     async (dispatch) => {
-        dispatch(toggleIsFetching(true));
+        dispatch(usersActions.toggleIsFetching(true));
         // Получаем с сервера информацию о юзерах
         let response = await UsersAPI.getUsers(currentPage, pageSize);
-        dispatch(toggleIsFetching(false));
-        dispatch(setUsers(response.items));
-        dispatch(setTotalUsersCount(response.totalCount));
+        dispatch(usersActions.toggleIsFetching(false));
+        dispatch(usersActions.setUsers(response.items));
+        dispatch(usersActions.setTotalUsersCount(response.totalCount));
     };
 
 const _followUnfollowFlow = async (dispatch: DispatchType, userId: number, apiMethod: any,
-    followAction: (userId: number) => (UnfollowType | FollowType)) => {
-    dispatch(toggleIsFetching(true));
-    dispatch(toggleIsFollowingProgress(true, userId));
+    followAction: (userId: number) => (UsersActionsTypes)) => {
+    dispatch(usersActions.toggleIsFetching(true));
+    dispatch(usersActions.toggleIsFollowingProgress(true, userId));
     // Отписка от юзера
     let response = await apiMethod(userId);
     if (response.resultCode === 0) {
         dispatch(followAction(userId));
     }
-    dispatch(toggleIsFollowingProgress(false, userId));
-    dispatch(toggleIsFetching(false));
+    dispatch(usersActions.toggleIsFollowingProgress(false, userId));
+    dispatch(usersActions.toggleIsFetching(false));
 };
 
 // Санка для отписки от юзера с возможностью блока кнопки
 export const unfollowUserThunckCreator = (userId: number): ThunkType =>  async (dispatch) => {
-    _followUnfollowFlow(dispatch, userId, UsersAPI.unfollowUser.bind(UsersAPI), unfollow);
+    _followUnfollowFlow(dispatch, userId, UsersAPI.unfollowUser.bind(UsersAPI), usersActions.unfollow);
 };
 
 // Санка для подписки на юзера с возможностью блока кнопки
 export const followUserThunckCreator = (userId: number): ThunkType => async (dispatch) => {
-    _followUnfollowFlow(dispatch, userId, UsersAPI.followUser.bind(UsersAPI), follow);
+    _followUnfollowFlow(dispatch, userId, UsersAPI.followUser.bind(UsersAPI), usersActions.follow);
 };
 
 export default usersReducer;

@@ -4,16 +4,16 @@ import userDefaultPhoto from "../../../../asets/images/userDefaultPhoto.png";
 import ProfileStatusWithHooks from "../../ProfileStatus/ProfileStatusWithHooks";
 import { useState } from 'react';
 import ProfileDataReduxForm from './ProfileDataForm'
-import { ProfileType } from '../../../../types/types';
+import { ProfileType, ContactsType} from '../../../../types/types';
 
 type ProfileInfoType = {
     profile: ProfileType
     isOwner: boolean
     status: string
-    toggleFetching: (isFetching: boolean) => (void)
+    toggleIsFetching: (isFetching: boolean) => (void)
     updateStatus: (newStatus: string) => void
-    updateProfileInfo: (formData: ProfileType, userId: number) => any
-    savePhoto: (file: any) => (void)
+    updateProfileInfo: (formData: ProfileType, userId: number) => Promise<void>
+    savePhoto: (file: File) => (void)
 }
 
 const ProfileInfo = (props: ProfileInfoType) => {
@@ -22,10 +22,10 @@ const ProfileInfo = (props: ProfileInfoType) => {
 
     // Отображаем прелодер, если инфа о профайле еще не подгрузилась
     if (!props.profile) {
-        props.toggleFetching(true);
+        props.toggleIsFetching(true);
         return <></>;
     } else {
-        props.toggleFetching(false);
+        props.toggleIsFetching(false);
     }
     // Обновление фото
     const onMainPhotoSelected = (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +35,7 @@ const ProfileInfo = (props: ProfileInfoType) => {
     };
 
     // Редактирование профайла
-    const onSubmit = (formData: any) => {
+    const onSubmit = (formData: ProfileType) => {
         props.updateProfileInfo(formData, props.profile.userId).then(
             () => {
                 setEditMode(false);   
@@ -84,20 +84,20 @@ const ProfileData: React.FC<ProfileDataType> = ({profile, isOwner, switchToEditM
         </div>
         <b>Contacts: </b> {
             Object.keys(profile.contacts).map(key => {
-                    // @ts-ignore
-                    return profile.contacts[key] && <Contacts key={key} contactMean={key} contactValue={profile.contacts[key]} />
+                    return profile.contacts[key as keyof ContactsType] && 
+                    <Contacts key={key} contactMean={key} contactValue={profile.contacts[key as keyof ContactsType]} />
             })
         }
         {isOwner && <button className={s.btnEditP} onClick={switchToEditMode}>Edit information</button>}
     </div>
 };
 
-type ContactsType = {
+type ContactsValuesType = {
     contactMean: string
     contactValue: string
 }
 
-const Contacts: React.FC<ContactsType> = ({ contactMean, contactValue }) => {
+const Contacts: React.FC<ContactsValuesType> = ({ contactMean, contactValue }) => {
     return <div className={s.Contacts}><b>{contactMean}</b>: {contactValue}</div>
 };
 

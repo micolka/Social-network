@@ -2,17 +2,18 @@ import React from "react";
 import s from './Dialogs.module.css'
 import DialogItem from './DialogItem/DialogItem'
 import Message from "./Message/Message";
-import {Redirect} from "react-router-dom";
-import {Field, reduxForm} from "redux-form";
+import {reduxForm, InjectedFormProps} from "redux-form";
 import {maxLengthCreator, requiredField} from "../../utils/validators/validators";
-import {TextArea} from "../../utils/validators/customTextArea";
+import {TextArea, createCustomField} from "../../utils/validators/customTextArea";
 import { DialogType, MessagesType } from "../../types/types";
+import { InitialStateType } from "../../redux/dialogsReducer";
 
+type PropsType = {
+    dialogsData: InitialStateType
+    addDialogMessage: (messTxtValue: string) => void
+}
 
-const Dialogs = (props: any) => {
-
-    // Если не в системе переход на страницу логина
-    if (!props.isAuth) return <Redirect to={"/login"}/>;
+const Dialogs: React.FC<PropsType> = (props) => {
 
     // данные для отрисовки списка чатов на странице Messages
     let formatedDialogData = props.dialogsData.dialogs.map((elem: DialogType) => {
@@ -24,7 +25,7 @@ const Dialogs = (props: any) => {
     });
 
     // обработка события Send Message
-    const onSubmit = (formData: any) => {
+    const onSubmit = (formData: SendMessageFormValuesType) => {
         let {messTxtValue} = formData;
         props.addDialogMessage(messTxtValue);
     };
@@ -44,11 +45,18 @@ const Dialogs = (props: any) => {
 
 let maxLength = maxLengthCreator(100);
 
-const SendMessageForm = (props: any) => {
+type SendMessageFormValuesType = {
+    messTxtValue: string
+}
+type FormPropsType = {
+}
+type FormKeysType = Extract<keyof SendMessageFormValuesType, string>;
+
+const SendMessageForm: React.FC<InjectedFormProps<SendMessageFormValuesType,
+FormPropsType> & FormPropsType> = (props) => {
     return <form onSubmit={props.handleSubmit}>
         <div>
-            <Field placeholder={'Say hello to momy!'} name={"messTxtValue"}
-                   component={TextArea} validate={[requiredField, maxLength]} className={s.inputMessage}/>
+            {createCustomField<FormKeysType>("Say hello to momy!", "messTxtValue", TextArea, [requiredField, maxLength], s.inputMessage)}
         </div>
         <div>
             <button className={s.btnSendMessage}>Send</button>
@@ -56,6 +64,6 @@ const SendMessageForm = (props: any) => {
     </form>
 };
                                             //  a unique name for the form
-const SendMessageReduxForm = reduxForm({form: 'sendMessageForm'})(SendMessageForm);
+const SendMessageReduxForm = reduxForm<SendMessageFormValuesType, FormPropsType>({form: 'sendMessageForm'})(SendMessageForm);
 
 export default Dialogs;

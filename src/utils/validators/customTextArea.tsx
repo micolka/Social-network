@@ -29,8 +29,12 @@ export const Input: React.FC<WrappedFieldProps> = (props) => {
     return <FormControl {...props}> <input {...input} {...restProps} /></FormControl>
 }
 
-export const createCustomField = (placeholder: string, name: string, component: React.FC<WrappedFieldProps>,
-    validators: Array<FieldValidatorType>, className: string, props = {}) => {
+export function createCustomField<FormKeysType extends string> (placeholder: string | undefined,
+                                name: FormKeysType,
+                                component: React.FC<WrappedFieldProps>,
+                                validators: Array<FieldValidatorType>,
+                                className: string | null,
+                                props = {}) {
     return <div>
         <Field placeholder={placeholder} name={name} component={component}
             validate={validators} className={className} {...props} />

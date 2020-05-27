@@ -11,7 +11,7 @@ type LoginPropsType = {
 
 const Login: React.FC<LoginPropsType> = (props) => {
 
-    const onSubmit = (formData: any) => {
+    const onSubmit = (formData: LoginFormValuesType) => {
         let {login, password, rememberMe, captcha} = formData;
         props.loginMe(login, password, rememberMe, captcha);
     };
@@ -30,21 +30,23 @@ type LoginFormValuesType = {
     password: string
     rememberMe: boolean
     captcha: string
-}
+};
 type LoginFormOwnPropsType = {
     captchaURL: string | null
-}
+};
+type FormKeysType = Extract<keyof LoginFormValuesType, string>;
+
 
 const LoginForm: React.FC<InjectedFormProps<LoginFormValuesType,
     LoginFormOwnPropsType> & LoginFormOwnPropsType> = ({ handleSubmit, captchaURL, error }) => {
         return <form onSubmit={handleSubmit}>
-            {createCustomField("Login", "login", Input, [requiredField, maxLength], s.inputLogin)}
-            {createCustomField("Password", "password", Input, [requiredField, maxLength], s.inputLogin, { type: "password" })}
-            <div className={s.remMe}>
+            {createCustomField<FormKeysType>("Login", "login", Input, [requiredField, maxLength], s.inputLogin)}
+            {createCustomField<FormKeysType>("Password", "password", Input, [requiredField, maxLength], s.inputLogin, { type: "password" })}
+            <div className={s.remMe}>  
                 <Field component={"input"} name={"rememberMe"} type={"checkbox"} />Remember me
-        </div>
+            </div>
             {captchaURL && <div>
-                {createCustomField("Captcha", "captcha", Input, [requiredField, maxCaptchaLength], s.inputLogin)}
+                {createCustomField<FormKeysType>("Captcha", "captcha", Input, [requiredField, maxCaptchaLength], s.inputLogin)}
                 <div>
                     <img src={captchaURL} alt={"captcha"} />
                 </div>

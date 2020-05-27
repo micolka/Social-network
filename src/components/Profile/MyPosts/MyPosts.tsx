@@ -1,11 +1,17 @@
 import React from 'react';
 import s from './MyPosts.module.css'
 import Post from './Post/Post';
-import {Field, reduxForm} from "redux-form";
+import {reduxForm, InjectedFormProps} from "redux-form";
 import {maxLengthCreator, requiredField} from "../../../utils/validators/validators";
-import {TextArea} from "../../../utils/validators/customTextArea";
+import {TextArea, createCustomField} from "../../../utils/validators/customTextArea";
+import { PostType } from '../../../types/types';
 
-const MyPosts = (props) => {
+type PropsType = {
+    posts: Array<PostType>
+    addPost: (postTxtValue: string) => void
+}
+
+const MyPosts: React.FC<PropsType> = (props) => {
 
     // создание массива тегов с постами для рендера
     let formatedPostsData = props.posts.map((elem) => {
@@ -13,7 +19,7 @@ const MyPosts = (props) => {
     });
 
     // обработка события Publish Post
-    const onSubmit = (formData) => {
+    const onSubmit = (formData: PostFormValuesType) => {
         let {postTxtValue} = formData;
         props.addPost(postTxtValue);
     };
@@ -31,11 +37,18 @@ const MyPosts = (props) => {
 
 let maxLength = maxLengthCreator(50);
 
-const PublishPostForm = (props) => {
+type PostFormValuesType = {
+    postTxtValue: string
+}
+type FormPropsType = {
+}
+type FormKeysType = Extract<keyof PostFormValuesType, string>;
+
+const PublishPostForm: React.FC<InjectedFormProps<PostFormValuesType,
+FormPropsType> & FormPropsType> = (props) => {
     return <form onSubmit={props.handleSubmit}>
         <div>
-            <Field placeholder={'Type something here'} name={"postTxtValue"}
-                   component={TextArea} validate={[requiredField, maxLength]} className={s.inputPost}/>
+            {createCustomField<FormKeysType>("Type something here", "postTxtValue", TextArea, [requiredField, maxLength], s.inputPost)}
         </div>
         <div>
             <button className={s.btnSendPost}>Add post</button>
@@ -43,6 +56,6 @@ const PublishPostForm = (props) => {
     </form>
 };
                                             // a unique name for the form
-const PublishPostReduxForm = reduxForm({form: 'publishPostForm'})(PublishPostForm);
+const PublishPostReduxForm = reduxForm<PostFormValuesType, FormPropsType>({form: 'publishPostForm'})(PublishPostForm);
 
 export default MyPosts;

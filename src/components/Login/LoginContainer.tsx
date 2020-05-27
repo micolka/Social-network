@@ -17,6 +17,7 @@ type OwnPropsType = {
 }
 type PropsType = MapStateToPropsType & MapDispatchToPropsType & OwnPropsType;
 
+ 
 class LoginContainer extends React.Component<PropsType> {
     render() {
         if (this.props.isAuth) return <Redirect to={"/profile"}/>;

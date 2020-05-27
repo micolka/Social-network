@@ -5,7 +5,14 @@ import {NavLink} from "react-router-dom";
 import Preloader from "../common/preloader/preloader";
 import logoSPSN from '../../asets/images/logoSPSN.png'
 
-const Header = (props) => {
+type PropsType = {
+    isFetching: boolean
+    isAuthorised: boolean
+    login: string | null
+    disconnectMe: () => void
+}
+
+const Header: React.FC<PropsType> = (props) => {
     return (
         <header className={s.header}>
             <img className={s.logoImg} src={logoSPSN} alt="logo"></img>

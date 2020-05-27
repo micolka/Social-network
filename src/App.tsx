@@ -2,9 +2,9 @@ import React, { Suspense } from 'react';
 import './App.css';
 import Navbar from './components/Navbar/Navbar';
 import News from "./components/news/News";
-import Musik from "./components/Musik/Musik";
+import Musik from "./components/Music/Music";
 import Settings from "./components/Settings/Settings";
-import { Route, withRouter, Redirect, Switch } from "react-router-dom";
+import { Route, withRouter, Redirect } from "react-router-dom";
 import UsersContainer from "./components/Users/UsersContainer";
 import HeaderContainer from "./components/Header/HeaderContainer";
 import LoginContainer from "./components/Login/LoginContainer";
@@ -13,11 +13,19 @@ import { setAppThunckCreator } from "./redux/appReducer";
 import { compose } from "redux";
 import MainPreloader from "./components/common/mainPreloader/mainPreloader";
 import Preloader from './components/common/preloader/preloader';
+import { AppStateType } from './redux/reduxStore';
 
 const DialogsContainer = React.lazy(() => import('./components/Dialogs/DialogsContainer'));
 const ProfileContainer = React.lazy(() => import('./components/Profile/ProfileContainer'));
 
-class App extends React.Component {
+
+type MapStateToPropsType = ReturnType<typeof mapStateToProps>;
+type MapDispatchToPropsType = {
+    initializeApp: () => void
+};
+type OwnPropsType ={};
+
+class App extends React.Component<MapStateToPropsType & MapDispatchToPropsType> {
 
     cathAllUnhandledErrors = () => {
         console.log("Some error ocured");
@@ -50,7 +58,6 @@ class App extends React.Component {
                 <Navbar />
                 <div className='app-wrapper-content'>
                     <Suspense fallback={<div><Preloader /></div>}>
-
                         <Route path='/dialogs' render={() => <DialogsContainer />} />
                         <Route path='/profile/:userId?' render={() => <ProfileContainer />} />
                         <Route exact path='/' render={() => <Redirect to={"/profile"} />} />
@@ -67,11 +74,12 @@ class App extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: AppStateType) => ({
     isInit: state.appData.isInitialized
 });
 
-export default compose(
+export default compose<React.ComponentType>(
     withRouter,
-    connect(mapStateToProps, { initializeApp: setAppThunckCreator })
+    connect<MapStateToPropsType, MapDispatchToPropsType, OwnPropsType, AppStateType>(mapStateToProps, 
+        { initializeApp: setAppThunckCreator })
 )(App);

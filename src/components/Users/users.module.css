@@ -3,19 +3,19 @@
 }
 
 .UsersBox {
+    padding: 10px;
     display: grid;
     grid-template-columns: 200px 200px;
-
 }
 
 .userBlock {
-
+    
 }
 
 .selector {
     padding: 10px;
 }
-.restPages {
+.restItems {
     border: 1px solid #3498db;
     padding: 1px 5px;
     border-radius: 5px;
@@ -23,7 +23,10 @@
     cursor: pointer;
 }
 
-.selectedPage {
+.restItems:hover {
+    background: #2ecc71;
+}
+.selectedItem {
     background-color: #2ecc71;
     font-weight: bold;
     padding: 1px 5px;

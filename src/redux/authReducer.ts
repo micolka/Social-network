@@ -2,6 +2,7 @@ import {ResultCodesEnum} from "../API/API";
 import { AuthAPI, CaptchaIsRequiredEnum } from "../API/AuthAPI";
 import {stopSubmit} from "redux-form";
 import { InferActionsTypes, BaseThunkType } from "../types/types";
+import { usersActions, UsersActionsTypes } from "./usersReducer";
 
 let initialState = {
     userId: null as number | null,
@@ -38,7 +39,7 @@ const authReducer = (state = initialState, action: AuthActionsTypes): InitialSta
     }
 };
 
-type AuthActionsTypes = InferActionsTypes<typeof authActions>;
+type AuthActionsTypes = InferActionsTypes<typeof authActions> | UsersActionsTypes;
 
 // Action creators. Создает экшены для вызова функций authReducer
 export const authActions = {
@@ -79,7 +80,10 @@ export const loginThunckCreator = (email: string, password: string,
 export const exitThunckCreator = (): ThunkType => async (dispatch) => {
     let response = await AuthAPI.exitMe();
     if (response.resultCode === ResultCodesEnum.Succes) {
+        // Сброс всех параметров
         dispatch(authActions.clearAuthUserData());
+        dispatch(usersActions.setCurrentPage(1));
+        dispatch(usersActions.setUsersFilter(false, true));
     }
 };
 

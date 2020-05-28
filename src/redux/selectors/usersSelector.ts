@@ -10,7 +10,7 @@ export const totalUsersCountSelector = (state: AppStateType) => {
 }
 
 export const currentPageSelector = (state: AppStateType) => {
-    return state.usersData.currentPage;
+    return state.usersData.filterProps.currentPage;
 }
 
 export const isFetchingSelector = (state: AppStateType) => {

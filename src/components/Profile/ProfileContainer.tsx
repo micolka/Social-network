@@ -5,7 +5,8 @@ import {getStatusThunckCreator,
         showUserProfileThunckCreator,
         updateStatusThunckCreator,
         saveProfilePhotoThunckCreator,
-        updateProfileThunckCreator } from "../../redux/profileReducer";
+        updateProfileThunckCreator, 
+        profileActions} from "../../redux/profileReducer";
 import {withRouter, RouteComponentProps} from "react-router-dom";
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 import {compose} from "redux";
@@ -25,6 +26,7 @@ type MapDispatchToPropsType ={
     savePhoto: (file: File) => (void)
     showUserProfile: (UserID: number) => void
     getUserStatus: (UserID: number) => void
+    clearUserProfile: () => void
 }
 type PropsType = MapStateToPropsType & MapDispatchToPropsType & RouteComponentProps<PathParamsType>;
 type PathParamsType = {
@@ -37,6 +39,9 @@ class ProfileContainer extends React.Component<PropsType> {
         // Берем параметр UserID из адресной строки
         let UserID = +this.props.match.params.userId;
         if (!UserID) UserID = this.props.userId;
+        if (UserID !== this.props.userId) {
+            this.props.clearUserProfile();    
+        }
         this.props.showUserProfile(UserID);
         this.props.getUserStatus(UserID);
     }
@@ -79,6 +84,7 @@ export default compose<React.ComponentType>(
         getUserStatus: getStatusThunckCreator,
         updateStatus: updateStatusThunckCreator,
         savePhoto: saveProfilePhotoThunckCreator,
+        clearUserProfile: profileActions.clearUserProfile,
         updateProfileInfo:updateProfileThunckCreator,
         toggleIsFetching: usersActions.toggleIsFetching}),
     withRouter,

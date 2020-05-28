@@ -19,7 +19,11 @@ let initialState = {
     users: [] as Array<UserType>,
     pageSize: 10,
     totalUsersCount: 0,
-    currentPage: 1,
+    filterProps: {
+        currentPage: 1,
+        friend: false,
+        allUsers: true
+    },
     isFetching: false,
     followingQueie: [] as Array<number>, // array of users ID's that are curently in progress of un\following
 };
@@ -41,7 +45,14 @@ const usersReducer = (state = initialState, action: UsersActionsTypes): InitialS
         case 'RSN/users/SET-USERS':
             return {...state, users: action.users};
         case 'RSN/users/SET-CURRENT-PAGE':
-            return {...state, currentPage: action.currentPage};
+            return {...state, 
+                    filterProps: {...state.filterProps,  currentPage: action.currentPage}
+            };
+        case 'RSN/users/SET-USERS-FILTER':
+            return {
+                ...state,
+                filterProps: {...state.filterProps, friend: action.friend, allUsers: action.allUsers}
+            };
         case 'RSN/users/SET-USERS-TOTAL-COUNT':
             return {...state, totalUsersCount: action.totalUsersCount};
         case 'RSN/users/TOGGLE-IS-FETCHING':
@@ -65,6 +76,7 @@ export const usersActions = {
     unfollow : (userId: number) => ({type: 'RSN/users/UNFOLLOW', userId: userId} as const),
     setUsers : (users: Array<UserType>) => ({type: 'RSN/users/SET-USERS', users: users} as const),
     setCurrentPage : (currentPage: number) => ({type: 'RSN/users/SET-CURRENT-PAGE', currentPage: currentPage} as const),
+    setUsersFilter : (friend: boolean, allUsers: boolean) => ({type: 'RSN/users/SET-USERS-FILTER', friend, allUsers} as const),
     setTotalUsersCount : (totalCount: number) => ({type: 'RSN/users/SET-USERS-TOTAL-COUNT', totalUsersCount: totalCount} as const),
     toggleIsFetching : (isFetching: boolean) => ({type: 'RSN/users/TOGGLE-IS-FETCHING', isFetching: isFetching} as const),
     toggleIsFollowingProgress : (followingInProgress: boolean, userId: number) => ({
@@ -75,14 +87,14 @@ type ThunkType = BaseThunkType<UsersActionsTypes>;
 type DispatchType = Dispatch<UsersActionsTypes>;
 
 // Санка для получения списка юзеров на определенной странице
-export const getUsersThunckCreator = (currentPage: number, pageSize: number): ThunkType =>
+export const getUsersThunckCreator = (currentPage: number, pageSize: number, friend?: boolean,  term?: string): ThunkType =>
     async (dispatch) => {
         dispatch(usersActions.toggleIsFetching(true));
         // Получаем с сервера информацию о юзерах
-        let response = await UsersAPI.getUsers(currentPage, pageSize);
-        dispatch(usersActions.toggleIsFetching(false));
+        let response = await UsersAPI.getUsers(currentPage, pageSize, friend, term);      
         dispatch(usersActions.setUsers(response.items));
         dispatch(usersActions.setTotalUsersCount(response.totalCount));
+        dispatch(usersActions.toggleIsFetching(false));
     };
 
 const _followUnfollowFlow = async (dispatch: DispatchType, userId: number, apiMethod: any,

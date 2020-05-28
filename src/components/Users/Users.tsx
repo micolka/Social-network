@@ -7,20 +7,28 @@ import { UserType } from "../../types/types";
 
 type PropsType = {
     totalUsersCount: number
-    pageSize: number
-    currentPage: number
-    onPageChanged: (pageNumber: number) => void
+    pageSize: number 
     users: Array<UserType>
     followingQueie: Array<number>
+    isAuthorized: boolean
+     filterProps: {friend: boolean; allUsers: boolean; currentPage: number}
     unfollowUser: (id: number) => (void)
     followUser: (id: number) => (void)
+    onFilterChanged: (friend: boolean, allUsers: boolean) => (void)
+    onPageChanged: (pageNumber: number) => void
 }
 
-const Users: React.FC<PropsType> = ({totalUsersCount, pageSize, onPageChanged, currentPage, ...props}) => {
+const Users: React.FC<PropsType> = ({totalUsersCount, pageSize, onPageChanged, ...props}) => {
 
-    return <div>
-        <Paginator totalUsersCount={totalUsersCount} pageSize={pageSize}
-                   currentPage={currentPage} onPageChanged={onPageChanged}/>
+    return <div>      
+        {props.isAuthorized && <div className={styles.selector}>
+            <span className={props.filterProps.allUsers ? styles.selectedItem : styles.restItems} 
+                onClick={() => {props.onFilterChanged(false, true)}}>All</span>
+            <span className={props.filterProps.friend ? styles.selectedItem : styles.restItems}
+                onClick={() => {props.onFilterChanged(true, false)}}>Friends</span>
+            <span className={(!props.filterProps.friend && !props.filterProps.allUsers) ? styles.selectedItem : styles.restItems} 
+                onClick={() => {props.onFilterChanged(false, false)}}>Rest</span>
+        </div>}
         <div className={styles.UsersBox}>
             {props.users.map(u => <div className={styles.userBlock}>
             <span>
@@ -46,10 +54,13 @@ const Users: React.FC<PropsType> = ({totalUsersCount, pageSize, onPageChanged, c
             </span>
                 <span>
                     <div>{u.name}</div>
-                    <div>{u.status}</div>
+{/*                     <div>{u.status}</div>
+                    <div>{u.uniqueUrlName}</div> */}
                 </span>
             </div>)}
         </div>
+        <Paginator totalUsersCount={totalUsersCount} pageSize={pageSize}
+                   currentPage={props.filterProps.currentPage} onPageChanged={onPageChanged}/>
     </div>
 };
 

@@ -44,6 +44,12 @@ const profileReducer = (state = initialState, action: ProfileActionsTypes): Init
                 profile: {...state.profile, photos: action.photos} as ProfileType
             };
         }
+        case "RSN/profile/CLEAR-USER-PROFILE": {
+            return {
+                ...state,
+                profile: null
+            }
+        }
         default: return state;
     }
 };
@@ -55,7 +61,8 @@ export const profileActions = {
     addPost: (text: string) => ({type: 'RSN/profile/ADD-POST', postMessage: text} as const),
     setUserProfile: (profile: ProfileType) => ({type: 'RSN/profile/SET-USER-PROFILE', profile} as const),
     setStatus: (status: string) => ({type: 'RSN/profile/SET-STATUS', status} as const),
-    setUserPhoto: (photos: PhotosType) => ({type: 'RSN/profile/SET-USER-PHOTO', photos} as const)
+    setUserPhoto: (photos: PhotosType) => ({type: 'RSN/profile/SET-USER-PHOTO', photos} as const),
+    clearUserProfile: () => ({type: 'RSN/profile/CLEAR-USER-PROFILE'} as const)
 }
 
 type ThunkType = BaseThunkType<ProfileActionsTypes>;

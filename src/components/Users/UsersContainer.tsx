@@ -7,7 +7,7 @@ import {
 } from "../../redux/usersReducer";
 import {compose} from "redux";
 import {
-    currentPageSelector, followingQueie, isFetchingSelector,
+    followingQueie, isFetchingSelector,
     pageSizeSelector, totalUsersCountSelector, usersSuperSelector
 } from "../../redux/selectors/usersSelector";
 import { UserType } from "../../types/types";
@@ -17,14 +17,20 @@ type MapStateToPropsType ={
     users: Array<UserType>
     pageSize: number
     totalUsersCount: number
-    currentPage: number
     isFetching: boolean
     followingQueie: Array<number>
+    filterProps: {
+        friend: boolean
+        allUsers: boolean
+        currentPage: number
+    }
+    isAuthorized: boolean
 }
 
 type MapDispatchToPropsType ={
-    getUsers: (currentPage: number, pageSize: number) => (void)
+    getUsers: (currentPage: number, pageSize: number, friend?: boolean | undefined) => (void)
     setCurrentPage: (checkedPage: number) => (void)
+    setUsersFilter: (friend: boolean, allUsers: boolean) => (void)
     unfollowUserThunckCreator: (id: number) => (void)
     followUserThunckCreator: (id: number) => (void)
 }
@@ -38,25 +44,45 @@ class UsersAPIContainer extends React.Component<PropsType> {
 
     // Первая отрисовка страницы с юзерами
     componentDidMount() {
-        this.props.getUsers(this.props.currentPage, this.props.pageSize);
+        this.props.getUsers(this.props.filterProps.currentPage, this.props.pageSize, this.returnFriend());
     }
 
     // Функция переключения страницы с юзерами
     onPageChanged = (checkedPage: number) => {
         this.props.setCurrentPage(checkedPage);
-        this.props.getUsers(checkedPage, this.props.pageSize);
     };
+
+    // Обработка фильтрации юзеров
+    onFilterChanged = (friend: boolean, allUsers: boolean) => {
+        this.props.setUsersFilter(friend, allUsers);
+        this.props.setCurrentPage(1);
+    }
+
+    // генерация свойства Friend для фильтрации в апишке 
+    returnFriend = () => {
+        if (this.props.filterProps.friend) return true;
+        if (this.props.filterProps.allUsers) return undefined;
+        return false;
+    }
+
+    componentDidUpdate(prevProps: PropsType){
+        if (this.props.filterProps !== prevProps.filterProps) {
+            this.props.getUsers(this.props.filterProps.currentPage, this.props.pageSize, this.returnFriend());
+        } 
+    }
 
     render() {
         return <>
-            <Users currentPage={this.props.currentPage}
-                   onPageChanged={this.onPageChanged}
+            <Users onPageChanged={this.onPageChanged}
                    users={this.props.users}
                    followingQueie={this.props.followingQueie}
                    unfollowUser={this.props.unfollowUserThunckCreator}
                    followUser={this.props.followUserThunckCreator}
                    pageSize={this.props.pageSize}
                    totalUsersCount={this.props.totalUsersCount}
+                   onFilterChanged={this.onFilterChanged}
+                   filterProps={this.props.filterProps}
+                   isAuthorized={this.props.isAuthorized}
             />
         </>
     }
@@ -70,16 +96,18 @@ const mapToStateProps = (state: AppStateType): MapStateToPropsType => {
         users: usersSuperSelector(state),
         pageSize: pageSizeSelector(state),
         totalUsersCount: totalUsersCountSelector(state),
-        currentPage: currentPageSelector(state),
         isFetching: isFetchingSelector(state),
         followingQueie: followingQueie(state),
+        filterProps: state.usersData.filterProps,
+        isAuthorized: state.authData.isAuthorised
     }
 };
 
 export default compose(
     connect<MapStateToPropsType, MapDispatchToPropsType, OwnPropsType, AppStateType>(
         mapToStateProps, 
-        {setCurrentPage: usersActions.setCurrentPage, getUsers: getUsersThunckCreator, unfollowUserThunckCreator, followUserThunckCreator}),
+        {setCurrentPage: usersActions.setCurrentPage, setUsersFilter: usersActions.setUsersFilter,
+        getUsers: getUsersThunckCreator, unfollowUserThunckCreator, followUserThunckCreator}),
         // withAuthRedirect
 )(UsersAPIContainer);
 

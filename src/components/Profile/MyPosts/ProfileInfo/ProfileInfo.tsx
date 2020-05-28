@@ -5,6 +5,7 @@ import ProfileStatusWithHooks from "../../ProfileStatus/ProfileStatusWithHooks";
 import { useState } from 'react';
 import ProfileDataReduxForm from './ProfileDataForm'
 import { ProfileType, ContactsType} from '../../../../types/types';
+import Preloader from '../../../common/preloader/preloader';
 
 type ProfileInfoType = {
     profile: ProfileType
@@ -22,10 +23,7 @@ const ProfileInfo = (props: ProfileInfoType) => {
 
     // Отображаем прелодер, если инфа о профайле еще не подгрузилась
     if (!props.profile) {
-        props.toggleIsFetching(true);
-        return <></>;
-    } else {
-        props.toggleIsFetching(false);
+        return <><Preloader /></>;
     }
     // Обновление фото
     const onMainPhotoSelected = (e: ChangeEvent<HTMLInputElement>) => {

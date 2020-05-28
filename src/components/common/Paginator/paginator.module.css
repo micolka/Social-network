@@ -17,3 +17,7 @@
     border-radius: 5px;
     cursor: pointer
 }
+
+.restPages:hover {
+    background: #2ecc71;
+}

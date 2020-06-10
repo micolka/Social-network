@@ -8,10 +8,6 @@
     grid-template-columns: 200px 200px;
 }
 
-.userBlock {
-    
-}
-
 .selector {
     padding: 10px;
 }
@@ -52,3 +48,43 @@
 .btnFollow:hover {
     background: #2ecc71;
 }
+
+.searchBlock {
+    padding-top: 10px;
+}
+
+.searchInput {
+    background: #191919;
+    text-align: center;
+    border: 2px solid #3498db;
+    padding: 5px 10px;
+    width: 130px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s;
+}
+.searchInput:focus {
+    width: 180px;
+    border-color: #2ecc71;
+}
+.searchButton {
+    margin-top: 10px;
+    background: none;
+    text-align: center;
+    border: 2px solid #2ecc71;
+    padding: 5px 10px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s;
+    cursor: pointer; 
+}
+.searchButton:hover {
+    background: #2ecc71;
+}
+
+
+
+
+

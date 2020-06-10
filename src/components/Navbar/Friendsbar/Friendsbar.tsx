@@ -1,20 +1,24 @@
 import React from 'react';
 import s from './Friendsbar.module.css'
+import { UserType } from '../../../types/types';
+import userDefaultPhoto from '../../../asets/images/userDefaultPhoto.png'
 
-const Friendsbar = () => {
+type PropsType = {
+    friendsData: Array<UserType>,
+    isAuthorized: boolean 
+}
+
+const Friendsbar: React.FC<PropsType> = (props) => {
+
+    if (!props.isAuthorized) return <></>
+
     return (
         <div className={s.friends}>
-            <div>Friends</div>
-            <div className={s.item}>
-                <img
-                    src='https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/batman_hero_avatar_comics-512.png' alt="ava1"></img>
-                <div>Pedro</div>
-            </div>
-            <div className={s.item}>
-                <img
-                    src='https://cdn3.iconfinder.com/data/icons/users-avatars-2/128/superman-512.png' alt="ava2"></img>
-                <div>Vasya</div>
-            </div>
+            My friends
+            {props.friendsData.map(item => <div className={s.item} key={item.id}>
+                <img src={item.photos.small != null ? item.photos.small : userDefaultPhoto} alt='avaFr'/>
+            <div>{item.name}</div>
+            </div>)}
         </div>
 
     );

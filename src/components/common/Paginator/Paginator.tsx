@@ -44,6 +44,7 @@ const Paginator: React.FC<PropsType> = (props) => {
                                  props.onPageChanged(p)
                              }}>{p}</span>;
             })}
+            {" Total items count: " + props.totalUsersCount}
         </div>
 };
 

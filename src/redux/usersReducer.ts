@@ -22,7 +22,8 @@ let initialState = {
     filterProps: {
         currentPage: 1,
         friend: false,
-        allUsers: true
+        allUsers: true,
+        term: ""
     },
     isFetching: false,
     followingQueie: [] as Array<number>, // array of users ID's that are curently in progress of un\following
@@ -51,7 +52,12 @@ const usersReducer = (state = initialState, action: UsersActionsTypes): InitialS
         case 'RSN/users/SET-USERS-FILTER':
             return {
                 ...state,
-                filterProps: {...state.filterProps, friend: action.friend, allUsers: action.allUsers}
+                filterProps: {
+                    ...state.filterProps,
+                    friend: action.friend,
+                    allUsers: action.allUsers,
+                    term: action.term
+                }
             };
         case 'RSN/users/SET-USERS-TOTAL-COUNT':
             return {...state, totalUsersCount: action.totalUsersCount};
@@ -76,7 +82,7 @@ export const usersActions = {
     unfollow : (userId: number) => ({type: 'RSN/users/UNFOLLOW', userId: userId} as const),
     setUsers : (users: Array<UserType>) => ({type: 'RSN/users/SET-USERS', users: users} as const),
     setCurrentPage : (currentPage: number) => ({type: 'RSN/users/SET-CURRENT-PAGE', currentPage: currentPage} as const),
-    setUsersFilter : (friend: boolean, allUsers: boolean) => ({type: 'RSN/users/SET-USERS-FILTER', friend, allUsers} as const),
+    setUsersFilter : (friend: boolean, allUsers: boolean, term: string) => ({type: 'RSN/users/SET-USERS-FILTER', friend, allUsers, term} as const),
     setTotalUsersCount : (totalCount: number) => ({type: 'RSN/users/SET-USERS-TOTAL-COUNT', totalUsersCount: totalCount} as const),
     toggleIsFetching : (isFetching: boolean) => ({type: 'RSN/users/TOGGLE-IS-FETCHING', isFetching: isFetching} as const),
     toggleIsFollowingProgress : (followingInProgress: boolean, userId: number) => ({

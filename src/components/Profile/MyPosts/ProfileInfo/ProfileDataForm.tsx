@@ -5,19 +5,13 @@ import s from './ProfileInfo.module.css'
 import { ProfileType, ContactsType } from '../../../../types/types';
 
 
-type ProfileDataFormValuesType = {
-    fullName: string
-    aboutMe: string
-    lookingForAJob: string
-    lookingForAJobDescription: string
-}
 type FormPropsType = {
     profile: ProfileType
 }
 
-type FormKeysType = Extract<keyof ProfileDataFormValuesType, string>;
+type FormKeysType = Extract<keyof ProfileType, string>;
 
-const ProfileDataForm: React.FC<InjectedFormProps<ProfileDataFormValuesType,
+const ProfileDataForm: React.FC<InjectedFormProps<ProfileType,
 FormPropsType> & FormPropsType> = ({handleSubmit, profile, error}) => {
     return <form onSubmit={handleSubmit}>
         <div>
@@ -45,7 +39,7 @@ FormPropsType> & FormPropsType> = ({handleSubmit, profile, error}) => {
     </form>
 };
 
-const ProfileDataReduxForm = reduxForm<ProfileDataFormValuesType, FormPropsType>({
+const ProfileDataReduxForm = reduxForm<ProfileType, FormPropsType>({
     // a unique name for the form
     form: 'editProfileForm'
 })(ProfileDataForm);

@@ -1,9 +1,12 @@
 
 .friends {
   color: coral;
+  margin-top: 5px;
 }
+
 .friends .item {
   color: crimson;
+  margin-top: 15px;
 }
 
 .friends img {

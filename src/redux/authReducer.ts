@@ -83,7 +83,7 @@ export const exitThunckCreator = (): ThunkType => async (dispatch) => {
         // Сброс всех параметров
         dispatch(authActions.clearAuthUserData());
         dispatch(usersActions.setCurrentPage(1));
-        dispatch(usersActions.setUsersFilter(false, true));
+        dispatch(usersActions.setUsersFilter(false, true, ""));
     }
 };
 

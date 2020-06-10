@@ -23,14 +23,15 @@ type MapStateToPropsType ={
         friend: boolean
         allUsers: boolean
         currentPage: number
+        term: string
     }
     isAuthorized: boolean
 }
 
 type MapDispatchToPropsType ={
-    getUsers: (currentPage: number, pageSize: number, friend?: boolean | undefined) => (void)
+    getUsers: (currentPage: number, pageSize: number, friend?: boolean | undefined, term?: string) => (void)
     setCurrentPage: (checkedPage: number) => (void)
-    setUsersFilter: (friend: boolean, allUsers: boolean) => (void)
+    setUsersFilter: (friend: boolean, allUsers: boolean, term: string) => (void)
     unfollowUserThunckCreator: (id: number) => (void)
     followUserThunckCreator: (id: number) => (void)
 }
@@ -44,7 +45,7 @@ class UsersAPIContainer extends React.Component<PropsType> {
 
     // Первая отрисовка страницы с юзерами
     componentDidMount() {
-        this.props.getUsers(this.props.filterProps.currentPage, this.props.pageSize, this.returnFriend());
+        this.props.getUsers(this.props.filterProps.currentPage, this.props.pageSize, this.returnFriend(), this.props.filterProps.term);
     }
 
     // Функция переключения страницы с юзерами
@@ -53,8 +54,8 @@ class UsersAPIContainer extends React.Component<PropsType> {
     };
 
     // Обработка фильтрации юзеров
-    onFilterChanged = (friend: boolean, allUsers: boolean) => {
-        this.props.setUsersFilter(friend, allUsers);
+    onFilterChanged = (friend: boolean, allUsers: boolean, term: string) => {
+        this.props.setUsersFilter(friend, allUsers, term);
         this.props.setCurrentPage(1);
     }
 
@@ -67,7 +68,7 @@ class UsersAPIContainer extends React.Component<PropsType> {
 
     componentDidUpdate(prevProps: PropsType){
         if (this.props.filterProps !== prevProps.filterProps) {
-            this.props.getUsers(this.props.filterProps.currentPage, this.props.pageSize, this.returnFriend());
+            this.props.getUsers(this.props.filterProps.currentPage, this.props.pageSize, this.returnFriend(), this.props.filterProps.term);
         } 
     }
 

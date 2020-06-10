@@ -51,7 +51,6 @@ const ProfileInfo = (props: ProfileInfoType) => {
                     <label className={s.btnSendImage} htmlFor={"input_file"}>Change avatar</label>
                     </div>}
                     {editMode 
-                        // @ts-ignore
                         ? <ProfileDataReduxForm initialValues={props.profile} profile={props.profile} onSubmit={onSubmit}/> 
                         : <ProfileData switchToEditMode={ () => {setEditMode(true)}} isOwner={props.isOwner} profile={props.profile}/>}
                     

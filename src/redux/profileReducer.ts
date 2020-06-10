@@ -1,7 +1,8 @@
-import { ProfileType, PhotosType, PostType, InferActionsTypes, BaseThunkType } from './../types/types';
+import { ProfileType, PhotosType, PostType, InferActionsTypes, BaseThunkType, UserType } from './../types/types';
 import { ProfileAPI } from "../API/ProfileAPI";
 import {usersActions, UsersActionsTypes} from "./usersReducer";
 import {stopSubmit} from "redux-form";
+import { UsersAPI } from '../API/UsersAPI';
 
 let initialState = {
     posts: [
@@ -12,7 +13,8 @@ let initialState = {
     ] as Array<PostType>,
     profile: null as ProfileType | null,
     status: '',
-    textAreaValue: ''
+    textAreaValue: '',
+    friendsData: [] as Array<UserType>,
 };
 
 export type InitialStateType = typeof initialState;
@@ -50,6 +52,12 @@ const profileReducer = (state = initialState, action: ProfileActionsTypes): Init
                 profile: null
             }
         }
+        case "RSN/profile/SET-FRIENDS-DATA": {
+            return {
+                ...state,
+                friendsData: action.friendsData
+            }
+        }
         default: return state;
     }
 };
@@ -62,6 +70,7 @@ export const profileActions = {
     setUserProfile: (profile: ProfileType) => ({type: 'RSN/profile/SET-USER-PROFILE', profile} as const),
     setStatus: (status: string) => ({type: 'RSN/profile/SET-STATUS', status} as const),
     setUserPhoto: (photos: PhotosType) => ({type: 'RSN/profile/SET-USER-PHOTO', photos} as const),
+    setFriendsData: (friendsData: Array<UserType>) => ({type: 'RSN/profile/SET-FRIENDS-DATA', friendsData} as const),
     clearUserProfile: () => ({type: 'RSN/profile/CLEAR-USER-PROFILE'} as const)
 }
 
@@ -75,6 +84,13 @@ export const showUserProfileThunckCreator = (UserID: number): ThunkType => async
     dispatch(usersActions.toggleIsFetching(false));
 
 };
+
+// Getting data for FriendsBar on Navbar
+export const getFriendsDataThunckCreator = (currentPage: number = 1, pageSize: number = 4, friend: boolean = true,  term?: string): ThunkType =>
+    async (dispatch) => {   
+        let response = await UsersAPI.getUsers(currentPage, pageSize, friend, term);      
+        dispatch(profileActions.setFriendsData(response.items));
+    };
 
 // Санка для обновления данных профиля пользователя на серваке
 export const updateProfileThunckCreator = (userProfile: ProfileType, UserID: number): ThunkType => async (dispatch) => {

@@ -36,7 +36,6 @@ type LoginFormOwnPropsType = {
 };
 type FormKeysType = Extract<keyof LoginFormValuesType, string>;
 
-
 const LoginForm: React.FC<InjectedFormProps<LoginFormValuesType,
     LoginFormOwnPropsType> & LoginFormOwnPropsType> = ({ handleSubmit, captchaURL, error }) => {
         return <form onSubmit={handleSubmit}>
